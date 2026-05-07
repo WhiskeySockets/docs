@@ -1,9 +1,13 @@
 ---
 title: "Connect with a QR code"
-description: "Authenticate your Baileys socket by scanning a QR code in the WhatsApp mobile app. Covers setup, browser config, and terminal display options."
+description: "Authenticate your Baileys socket by scanning a QR code in the WhatsApp mobile app. Covers the connection.update event, browser config, and rendering options."
 ---
 
-QR code authentication is the default way to link Baileys to your WhatsApp account. When you create a socket with `printQRInTerminal: true`, Baileys prints a QR code to your terminal. Open WhatsApp on your phone, navigate to **Linked Devices**, and scan the code to complete the link.
+QR code authentication is the default way to link Baileys to your WhatsApp account. Baileys emits a QR string on the `connection.update` event, which you render however you like — to the terminal, to an image, or to your frontend. Open WhatsApp on your phone, navigate to **Linked Devices**, and scan the code to complete the link.
+
+<Warning>
+  The `printQRInTerminal` socket option is **deprecated** and will be removed in a future version. Listen for the `qr` field on the `connection.update` event and render the code yourself.
+</Warning>
 
 ## Basic setup
 
@@ -12,36 +16,38 @@ QR code authentication is the default way to link Baileys to your WhatsApp accou
     If you haven't already, add Baileys to your project.
 
     ```bash
-    npm install @whiskeysockets/baileys
+    npm install @whiskeysockets/baileys qrcode-terminal
     ```
   </Step>
 
-  <Step title="Create the socket">
-    Import `makeWASocket` and pass `printQRInTerminal: true` to have Baileys render the QR code directly in your terminal.
+  <Step title="Create the socket and listen for the QR string">
+    The QR string is delivered through the `connection.update` event. Use a library like [`qrcode-terminal`](https://www.npmjs.com/package/qrcode-terminal) (or [`qrcode`](https://www.npmjs.com/package/qrcode) for image/canvas output) to render it.
 
     ```typescript
     import makeWASocket from '@whiskeysockets/baileys'
+    import qrcode from 'qrcode-terminal'
 
-    const sock = makeWASocket({
-      printQRInTerminal: true,
-    })
-    ```
+    const sock = makeWASocket({})
 
-    A QR code will appear in your terminal as soon as the connection handshake completes.
-  </Step>
+    sock.ev.on('connection.update', ({ connection, qr }) => {
+      if (qr) {
+        // Render the QR code yourself — printQRInTerminal is deprecated.
+        qrcode.generate(qr, { small: true })
+      }
 
-  <Step title="Scan the QR code">
-    On your phone, open WhatsApp and go to **Settings → Linked Devices → Link a Device**. Point your camera at the QR code in the terminal.
-
-    Once scanned, the `connection.update` event fires with `connection: 'open'`.
-
-    ```typescript
-    sock.ev.on('connection.update', ({ connection }) => {
       if (connection === 'open') {
         console.log('Connected to WhatsApp')
       }
     })
     ```
+
+    In production, send the `qr` string to your frontend and render it there instead of in the terminal.
+  </Step>
+
+  <Step title="Scan the QR code">
+    On your phone, open WhatsApp and go to **Settings → Linked Devices → Link a Device**. Point your camera at the rendered QR code.
+
+    Once scanned, WhatsApp **forcibly disconnects** the socket so Baileys can reconnect with full credentials. This is expected — handle it by reconnecting on `DisconnectReason.restartRequired` (see [Keeping the connection alive](#keeping-the-connection-alive)).
   </Step>
 </Steps>
 
@@ -55,7 +61,6 @@ import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
 // Show as "Ubuntu — My App"
 const sock = makeWASocket({
   browser: Browsers.ubuntu('My App'),
-  printQRInTerminal: true,
 })
 ```
 
@@ -77,7 +82,6 @@ import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
 const sock = makeWASocket({
   browser: Browsers.macOS('Desktop'),
   syncFullHistory: true,
-  printQRInTerminal: true,
 })
 ```
 
@@ -89,16 +93,21 @@ History messages arrive asynchronously via the `messaging-history.set` event aft
 
 ## Keeping the connection alive
 
-Baileys maintains a persistent WebSocket connection. If your process exits, the session is lost. You should handle the `connection.update` event to detect disconnections and reconnect when appropriate.
+Baileys maintains a persistent WebSocket connection. If your process exits, the session is lost. Handle the `connection.update` event to detect disconnections and reconnect when appropriate.
 
 ```typescript
 import makeWASocket, { DisconnectReason } from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
+import qrcode from 'qrcode-terminal'
 
 function connect() {
-  const sock = makeWASocket({ printQRInTerminal: true })
+  const sock = makeWASocket({})
 
-  sock.ev.on('connection.update', ({ connection, lastDisconnect }) => {
+  sock.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+    if (qr) {
+      qrcode.generate(qr, { small: true })
+    }
+
     if (connection === 'close') {
       const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode
       const shouldReconnect = statusCode !== DisconnectReason.loggedOut

@@ -26,7 +26,8 @@
             "pages": [
               "introduction",
               "installation",
-              "quickstart"
+              "quickstart",
+              "faq"
             ]
           },
           {
@@ -67,8 +68,26 @@
           {
             "group": "Advanced",
             "pages": [
+              "advanced/history-sync",
+              "advanced/usync",
+              "advanced/calls",
               "advanced/custom-functionality",
               "advanced/troubleshooting"
+            ]
+          },
+          {
+            "group": "Migration",
+            "pages": [
+              "migration/v7",
+              "migration/v8"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "community/contributing",
+              "community/translations",
+              "community/sponsor"
             ]
           }
         ]

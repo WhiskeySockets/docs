@@ -12,16 +12,18 @@ Pairing code authentication lets you link Baileys to WhatsApp using an 8-digit c
 ## Setup
 
 <Steps>
-  <Step title="Create the socket with printQRInTerminal disabled">
-    You must set `printQRInTerminal` to `false` when using pairing codes. If it is `true`, Baileys will attempt to display a QR code and the pairing code flow will not work correctly.
+  <Step title="Create the socket">
+    Create the socket without rendering a QR code. You can simply ignore the `qr` field on `connection.update` while using pairing codes.
 
     ```typescript
     import makeWASocket from '@whiskeysockets/baileys'
 
-    const sock = makeWASocket({
-      printQRInTerminal: false,
-    })
+    const sock = makeWASocket({})
     ```
+
+    <Note>
+      The legacy `printQRInTerminal` option is **deprecated** and should not be set. Don't render the QR string while pairing by code — just call `requestPairingCode` instead.
+    </Note>
   </Step>
 
   <Step title="Request a pairing code">
@@ -85,7 +87,6 @@ async function connect() {
 
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: false,
   })
 
   sock.ev.on('connection.update', async ({ connection, qr }) => {
