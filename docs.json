@@ -11,6 +11,12 @@
     "primary": "#18cdb1"
   },
   "navbar": {
+    "links": [
+      {
+        "label": "Sponsor",
+        "href": "https://github.com/sponsors/WhiskeySockets"
+      }
+    ],
     "primary": {
       "type": "github",
       "href": "https://github.com/WhiskeySockets/Baileys"
