@@ -16,17 +16,20 @@ The steps below build up to this complete working script. You can use it as a st
 ```typescript
 import makeWASocket, { DisconnectReason, useMultiFileAuthState } from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
+import qrcode from 'qrcode-terminal'
 
 async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
 
     const sock = makeWASocket({
-        auth: state,
-        printQRInTerminal: true
+        auth: state
     })
 
     sock.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect } = update
+        const { connection, lastDisconnect, qr } = update
+        if (qr) {
+            qrcode.generate(qr, { small: true })
+        }
         if (connection === 'close') {
             const shouldReconnect =
                 (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
@@ -95,12 +98,17 @@ connectToWhatsApp()
   </Step>
 
   <Step title="Create the socket">
-    Create a socket by calling `makeWASocket` with your auth state. Setting `printQRInTerminal: true` renders the QR code directly in your terminal on first run.
+    Create a socket by calling `makeWASocket` with your auth state. Listen for the `qr` field on `connection.update` and render it yourself — `printQRInTerminal` is deprecated.
 
     ```typescript
+    import qrcode from 'qrcode-terminal'
+
     const sock = makeWASocket({
-        auth: state,
-        printQRInTerminal: true
+        auth: state
+    })
+
+    sock.ev.on('connection.update', ({ qr }) => {
+        if (qr) qrcode.generate(qr, { small: true })
     })
     ```
 

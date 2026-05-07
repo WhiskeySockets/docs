@@ -16,7 +16,11 @@ const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
 
 const sock = makeWASocket({
   auth: state,
-  printQRInTerminal: true,
+})
+
+// Render the QR code yourself when the connection emits one.
+sock.ev.on('connection.update', ({ qr }) => {
+  if (qr) console.log('QR:', qr) // pipe to qrcode-terminal or your frontend
 })
 
 // Save credentials whenever they are updated
@@ -95,7 +99,6 @@ async function connectToWhatsApp() {
       creds: state.creds,
       keys: makeCacheableSignalKeyStore(state.keys, logger),
     },
-    printQRInTerminal: true,
   })
 
   sock.ev.on('connection.update', ({ connection, lastDisconnect }) => {

@@ -53,9 +53,12 @@ Baileys communicates with WhatsApp using the same binary WebSocket protocol as W
     ```typescript
     import makeWASocket, { useMultiFileAuthState } from '@whiskeysockets/baileys'
 
+    import qrcode from 'qrcode-terminal'
+
     const { state, saveCreds } = await useMultiFileAuthState('auth_info')
-    const sock = makeWASocket({ auth: state, printQRInTerminal: true })
+    const sock = makeWASocket({ auth: state })
     sock.ev.on('creds.update', saveCreds)
+    sock.ev.on('connection.update', ({ qr }) => qr && qrcode.generate(qr, { small: true }))
     ```
   </Step>
   <Step title="Send your first message">
