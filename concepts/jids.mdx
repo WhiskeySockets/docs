@@ -1,0 +1,188 @@
+---
+title: "WhatsApp JIDs explained"
+description: "JIDs (Jabber IDs) are how WhatsApp identifies users, groups, and broadcasts in Baileys. Learn the formats and helper functions for working with JIDs."
+---
+
+WhatsApp identifies every participant — users, groups, broadcast lists, and status feeds — with a **JID** (Jabber ID). JIDs originated in the XMPP protocol and follow the format `local@server`. You will encounter them constantly in Baileys: as the target of `sock.sendMessage`, in the `key.remoteJid` of every incoming message, and as parameters to group and contact queries.
+
+## JID formats
+
+<CardGroup cols={2}>
+  <Card title="User" icon="user">
+    `[countrycode][number]@s.whatsapp.net`
+
+    Example: `19999999999@s.whatsapp.net`
+  </Card>
+  <Card title="Group" icon="users">
+    `[timestamp]-[random]@g.us`
+
+    Example: `123456789-123345@g.us`
+  </Card>
+  <Card title="Broadcast list" icon="megaphone">
+    `[timestamp]@broadcast`
+
+    Example: `1234567890@broadcast`
+  </Card>
+  <Card title="Stories / Status" icon="circle-play">
+    `status@broadcast`
+
+    This is a fixed constant — all status updates go to this JID.
+  </Card>
+</CardGroup>
+
+### Phone number rules
+
+When constructing a user JID from a phone number:
+
+- Include the country code (e.g., `1` for the US, `44` for the UK).
+- Do **not** include `+`, `-`, spaces, or parentheses.
+- `19999999999@s.whatsapp.net` is correct; `+1 (999) 999-9999@s.whatsapp.net` is not.
+
+```typescript
+// Correct: country code + digits only, no symbols
+const jid = '19999999999@s.whatsapp.net'
+
+// Verify the number exists on WhatsApp before messaging
+const [result] = await sock.onWhatsApp(jid)
+if (result?.exists) {
+  await sock.sendMessage(result.jid, { text: 'Hello!' })
+}
+```
+
+<Tip>
+  Always use the JID returned by `sock.onWhatsApp` rather than the one you constructed. WhatsApp may normalize the number to a canonical JID.
+</Tip>
+
+---
+
+## Multi-device JIDs
+
+In the WhatsApp multi-device protocol, a single phone number can have multiple connected devices. Each device gets a device suffix appended: `19999999999:2@s.whatsapp.net`. The part before the `:` is the user, and the number after is the device ID.
+
+This is why you must never compare or split JIDs with string operations — a message from device `:0` and a message from device `:2` belong to the same user.
+
+---
+
+## JID helper functions
+
+Baileys exports a set of helper functions from `@whiskeysockets/baileys`. Always use these instead of manual string manipulation.
+
+### Parsing and encoding
+
+```typescript
+import { jidDecode, jidEncode, jidNormalizedUser } from '@whiskeysockets/baileys'
+
+// Decode a JID into its components
+const decoded = jidDecode('19999999999:2@s.whatsapp.net')
+// { user: '19999999999', server: 's.whatsapp.net', device: 2 }
+
+// Normalize a JID — strips device/agent suffix, lowercases
+const normalized = jidNormalizedUser('19999999999:2@s.whatsapp.net')
+// '19999999999@s.whatsapp.net'
+
+// Encode components back into a JID string
+const encoded = jidEncode('19999999999', 's.whatsapp.net')
+// '19999999999@s.whatsapp.net'
+```
+
+### Type checks
+
+```typescript
+import {
+  isJidGroup,
+  isJidBroadcast,
+  isJidStatusBroadcast,
+  isJidNewsletter,
+  isPnUser,
+  isLidUser,
+  areJidsSameUser,
+} from '@whiskeysockets/baileys'
+
+isJidGroup('123456789-123345@g.us')          // true
+isJidBroadcast('1234567890@broadcast')        // true
+isJidStatusBroadcast('status@broadcast')      // true
+isJidNewsletter('12345@newsletter')           // true
+isPnUser('19999999999@s.whatsapp.net')        // true
+isLidUser('abc123@lid')                       // true
+
+// Compare the user portion of two JIDs, ignoring device suffix
+areJidsSameUser(
+  '19999999999:0@s.whatsapp.net',
+  '19999999999:3@s.whatsapp.net'
+)  // true
+```
+
+### Common constants
+
+```typescript
+import { STORIES_JID, S_WHATSAPP_NET } from '@whiskeysockets/baileys'
+
+STORIES_JID    // 'status@broadcast'
+S_WHATSAPP_NET // '@s.whatsapp.net'
+```
+
+---
+
+## Practical patterns
+
+### Routing messages by type
+
+```typescript
+import { isJidGroup, isJidBroadcast } from '@whiskeysockets/baileys'
+
+sock.ev.on('messages.upsert', ({ messages, type }) => {
+  if (type !== 'notify') return
+  for (const msg of messages) {
+    const jid = msg.key.remoteJid!
+    if (isJidGroup(jid)) {
+      handleGroupMessage(msg)
+    } else if (isJidBroadcast(jid)) {
+      // ignore broadcast messages
+    } else {
+      handleDirectMessage(msg)
+    }
+  }
+})
+```
+
+### Filtering events with `shouldIgnoreJid`
+
+```typescript
+import { isJidBroadcast, isJidNewsletter } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  // Drop all events for broadcasts and newsletters
+  shouldIgnoreJid: (jid) => isJidBroadcast(jid) || isJidNewsletter(jid),
+})
+```
+
+### Checking if two JIDs belong to the same user
+
+```typescript
+import { areJidsSameUser } from '@whiskeysockets/baileys'
+
+// Works correctly even with device suffixes
+const isSameUser = areJidsSameUser(
+  msg.key.participant,   // e.g. '19999999999:3@s.whatsapp.net'
+  sock.user?.id          // e.g. '19999999999:0@s.whatsapp.net'
+)
+```
+
+---
+
+## What not to do
+
+<Warning>
+  Never split a JID string with `.split('@')` or compare JIDs with `===`. JIDs may carry device suffixes (`:2`), agent fields, or alternate server domains that cause string comparisons to silently produce wrong results.
+
+  ```typescript
+  // Wrong — misses device variants
+  const user = jid.split('@')[0]
+  const isSame = jid1 === jid2
+
+  // Correct — use the provided helpers
+  const { user } = jidDecode(jid)!
+  const isSame = areJidsSameUser(jid1, jid2)
+  ```
+</Warning>

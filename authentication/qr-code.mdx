@@ -1,0 +1,120 @@
+---
+title: "Connect with a QR code"
+description: "Authenticate your Baileys socket by scanning a QR code in the WhatsApp mobile app. Covers setup, browser config, and terminal display options."
+---
+
+QR code authentication is the default way to link Baileys to your WhatsApp account. When you create a socket with `printQRInTerminal: true`, Baileys prints a QR code to your terminal. Open WhatsApp on your phone, navigate to **Linked Devices**, and scan the code to complete the link.
+
+## Basic setup
+
+<Steps>
+  <Step title="Install Baileys">
+    If you haven't already, add Baileys to your project.
+
+    ```bash
+    npm install @whiskeysockets/baileys
+    ```
+  </Step>
+
+  <Step title="Create the socket">
+    Import `makeWASocket` and pass `printQRInTerminal: true` to have Baileys render the QR code directly in your terminal.
+
+    ```typescript
+    import makeWASocket from '@whiskeysockets/baileys'
+
+    const sock = makeWASocket({
+      printQRInTerminal: true,
+    })
+    ```
+
+    A QR code will appear in your terminal as soon as the connection handshake completes.
+  </Step>
+
+  <Step title="Scan the QR code">
+    On your phone, open WhatsApp and go to **Settings → Linked Devices → Link a Device**. Point your camera at the QR code in the terminal.
+
+    Once scanned, the `connection.update` event fires with `connection: 'open'`.
+
+    ```typescript
+    sock.ev.on('connection.update', ({ connection }) => {
+      if (connection === 'open') {
+        console.log('Connected to WhatsApp')
+      }
+    })
+    ```
+  </Step>
+</Steps>
+
+## Customizing the browser identity
+
+When you connect with a QR code, WhatsApp sees your client as a browser. You can control how it identifies itself using the `Browsers` constant exported from Baileys. This affects the name shown in WhatsApp's **Linked Devices** list.
+
+```typescript
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+// Show as "Ubuntu — My App"
+const sock = makeWASocket({
+  browser: Browsers.ubuntu('My App'),
+  printQRInTerminal: true,
+})
+```
+
+A few ready-made presets are available:
+
+| Preset | Example |
+|--------|---------|
+| `Browsers.ubuntu('My App')` | Ubuntu — My App |
+| `Browsers.macOS('Desktop')` | macOS — Desktop |
+| `Browsers.windows('My App')` | Windows — My App |
+
+## Receiving full message history
+
+By default, Baileys connects with a Chrome browser profile, which limits how much message history WhatsApp delivers on the initial sync. To request the full history, set `syncFullHistory: true` and use the `Browsers.macOS('Desktop')` preset, which WhatsApp treats as a desktop client eligible for extended history.
+
+```typescript
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  browser: Browsers.macOS('Desktop'),
+  syncFullHistory: true,
+  printQRInTerminal: true,
+})
+```
+
+History messages arrive asynchronously via the `messaging-history.set` event after the connection opens.
+
+<Note>
+  Requesting full history can significantly increase startup time and memory usage on accounts with large chat histories.
+</Note>
+
+## Keeping the connection alive
+
+Baileys maintains a persistent WebSocket connection. If your process exits, the session is lost. You should handle the `connection.update` event to detect disconnections and reconnect when appropriate.
+
+```typescript
+import makeWASocket, { DisconnectReason } from '@whiskeysockets/baileys'
+import { Boom } from '@hapi/boom'
+
+function connect() {
+  const sock = makeWASocket({ printQRInTerminal: true })
+
+  sock.ev.on('connection.update', ({ connection, lastDisconnect }) => {
+    if (connection === 'close') {
+      const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode
+      const shouldReconnect = statusCode !== DisconnectReason.loggedOut
+
+      if (shouldReconnect) {
+        connect()
+      } else {
+        console.log('Logged out. Re-scan the QR code to reconnect.')
+      }
+    }
+  })
+}
+
+connect()
+```
+
+<Tip>
+  Pair QR code authentication with `useMultiFileAuthState` so you only need to scan once. See [Save and restore WhatsApp sessions](/authentication/session-management).
+</Tip>

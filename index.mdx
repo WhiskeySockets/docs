@@ -1,0 +1,75 @@
+---
+title: "Baileys: WhatsApp Web API for TypeScript"
+description: "Baileys is a WebSocket-based TypeScript library for the WhatsApp Web API. Connect without a browser, send messages, manage groups, and handle real-time events."
+---
+
+Baileys lets you interact with the WhatsApp Web API directly over a WebSocket — no browser, no Selenium, no Chromium. Install it in your Node.js project, authenticate with a QR code or pairing code, and start sending and receiving messages in minutes.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="bolt" href="/quickstart">
+    Build and run your first WhatsApp bot in under 5 minutes.
+  </Card>
+  <Card title="Installation" icon="download" href="/installation">
+    Add Baileys to your project and check compatibility requirements.
+  </Card>
+  <Card title="Authentication" icon="key" href="/authentication/qr-code">
+    Connect your WhatsApp account using QR code or pairing code.
+  </Card>
+  <Card title="Sending Messages" icon="message" href="/messaging/sending-messages">
+    Send text, media, polls, reactions, and more.
+  </Card>
+</CardGroup>
+
+## Why Baileys?
+
+Baileys communicates with WhatsApp using the same binary WebSocket protocol as WhatsApp Web — without any browser overhead. This means your bots and integrations use a fraction of the memory of Selenium-based approaches.
+
+<CardGroup cols={2}>
+  <Card title="Events" icon="bell" href="/concepts/events">
+    Listen for messages, connection changes, and group updates in real time.
+  </Card>
+  <Card title="Groups" icon="users" href="/features/groups">
+    Create groups, manage participants, and configure group settings.
+  </Card>
+  <Card title="Privacy & Presence" icon="shield" href="/features/privacy">
+    Control privacy settings and subscribe to presence updates.
+  </Card>
+  <Card title="Advanced Usage" icon="wrench" href="/advanced/custom-functionality">
+    Register custom WebSocket callbacks and extend Baileys functionality.
+  </Card>
+</CardGroup>
+
+## Get started in 3 steps
+
+<Steps>
+  <Step title="Install the library">
+    Add Baileys to your Node.js project using your package manager of choice.
+    ```bash
+    npm install @whiskeysockets/baileys
+    ```
+  </Step>
+  <Step title="Authenticate">
+    Create a socket and scan the QR code with your WhatsApp app to link your account.
+    ```typescript
+    import makeWASocket, { useMultiFileAuthState } from '@whiskeysockets/baileys'
+
+    const { state, saveCreds } = await useMultiFileAuthState('auth_info')
+    const sock = makeWASocket({ auth: state, printQRInTerminal: true })
+    sock.ev.on('creds.update', saveCreds)
+    ```
+  </Step>
+  <Step title="Send your first message">
+    Once connected, send a message to any WhatsApp number.
+    ```typescript
+    sock.ev.on('connection.update', ({ connection }) => {
+      if (connection === 'open') {
+        sock.sendMessage('1234567890@s.whatsapp.net', { text: 'Hello from Baileys!' })
+      }
+    })
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  Baileys is an unofficial library and is not affiliated with WhatsApp. Use it responsibly and in accordance with WhatsApp's Terms of Service. The maintainers do not condone bulk messaging, spam, or stalkerware use cases.
+</Note>

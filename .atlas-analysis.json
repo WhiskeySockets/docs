@@ -1,0 +1,120 @@
+{
+  "projectType": "sdk-library",
+  "projectName": "Baileys",
+  "projectDescription": "A WebSocket-based TypeScript/JavaScript library for interacting with the WhatsApp Web API without requiring a browser.",
+  "theme": "luma",
+  "primaryColor": "#18cdb1",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "pages": [
+              "authentication/qr-code",
+              "authentication/pairing-code",
+              "authentication/session-management"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/socket-config",
+              "concepts/events",
+              "concepts/jids",
+              "concepts/data-store"
+            ]
+          },
+          {
+            "group": "Messaging",
+            "pages": [
+              "messaging/sending-messages",
+              "messaging/media-messages",
+              "messaging/message-actions",
+              "messaging/chat-management"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/groups",
+              "features/privacy",
+              "features/presence",
+              "features/broadcasts-stories"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/custom-functionality",
+              "advanced/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "No browser or Selenium required — connects via WebSocket directly",
+    "QR code and pairing code authentication",
+    "Send and receive all WhatsApp message types (text, media, polls, reactions)",
+    "Group management (create, add/remove members, settings)",
+    "Privacy controls (block/unblock, last seen, read receipts)",
+    "Presence and chat state updates",
+    "Broadcast lists and WhatsApp Stories support",
+    "Full TypeScript types and IntelliSense support",
+    "Signal Protocol encryption for secure messaging",
+    "Pluggable auth state and data store"
+  ],
+  "publicApiSurface": [
+    "makeWASocket(config: SocketConfig): WASocket",
+    "useMultiFileAuthState(folder: string)",
+    "makeCacheableSignalKeyStore(keys, logger)",
+    "makeInMemoryStore({})",
+    "fetchLatestBaileysVersion()",
+    "downloadMediaMessage(msg, type, options)",
+    "downloadContentFromMessage(msg, type)",
+    "getContentType(message)",
+    "getDevice(message)",
+    "getAggregateVotesInPollMessage(options)",
+    "generateMessageIDV2()",
+    "sock.sendMessage(jid, content, options?)",
+    "sock.readMessages(keys[])",
+    "sock.sendPresenceUpdate(type, jid?)",
+    "sock.chatModify(mod, jid)",
+    "sock.groupCreate(subject, participants[])",
+    "sock.groupParticipantsUpdate(jid, participants[], action)",
+    "sock.groupMetadata(jid)",
+    "sock.groupInviteCode(jid)",
+    "sock.groupAcceptInvite(code)",
+    "sock.groupToggleEphemeral(jid, seconds)",
+    "sock.fetchPrivacySettings()",
+    "sock.updateBlockStatus(jid, action)",
+    "sock.onWhatsApp(jid[])",
+    "sock.fetchStatus(jid)",
+    "sock.profilePictureUrl(jid, type?)",
+    "sock.presenceSubscribe(jid)",
+    "sock.updateProfileName(name)",
+    "sock.updateProfileStatus(status)",
+    "sock.requestPairingCode(phoneNumber)",
+    "sock.rejectCall(callId, callFrom)",
+    "sock.ev.on(event, handler)",
+    "sock.ev.off(event, handler)",
+    "sock.ev.process(handler)",
+    "BaileysEventMap (all events)",
+    "SocketConfig (all socket options)",
+    "AnyMessageContent (all message types)",
+    "WAMessage, WAMessageKey, WAMediaUpload"
+  ]
+}

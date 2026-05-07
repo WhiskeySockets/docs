@@ -1,0 +1,78 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Baileys",
+  "theme": "luma",
+  "logo": {
+    "light": "https://media.brand.dev/2d6faf07-fba8-4a9e-8719-cf2cf9156000.svg",
+    "dark": "https://media.brand.dev/2d6faf07-fba8-4a9e-8719-cf2cf9156000.svg"
+  },
+  "favicon": "https://media.brand.dev/591e1cc2-9793-4aff-8185-1fc0126dc2fd.png",
+  "colors": {
+    "primary": "#18cdb1"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/WhiskeySockets/Baileys"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "pages": [
+              "authentication/qr-code",
+              "authentication/pairing-code",
+              "authentication/session-management"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/socket-config",
+              "concepts/events",
+              "concepts/jids",
+              "concepts/data-store"
+            ]
+          },
+          {
+            "group": "Messaging",
+            "pages": [
+              "messaging/sending-messages",
+              "messaging/media-messages",
+              "messaging/message-actions",
+              "messaging/chat-management"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/groups",
+              "features/privacy",
+              "features/presence",
+              "features/broadcasts-stories"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/custom-functionality",
+              "advanced/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
