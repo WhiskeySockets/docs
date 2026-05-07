@@ -14,7 +14,8 @@
     "links": [
       {
         "label": "Sponsor",
-        "href": "https://github.com/sponsors/WhiskeySockets"
+        "href": "https://github.com/sponsors/WhiskeySockets",
+        "icon": "heart"
       }
     ],
     "primary": {
