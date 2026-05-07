@@ -67,10 +67,4 @@ Presence updates expire after approximately 10 seconds. If you want to keep show
 If a desktop client is active, WhatsApp does not send push notifications to your phone. Mark your Baileys client as offline using `sock.sendPresenceUpdate('unavailable')` if you want push notifications to reach your phone while the bot is running.
 </Note>
 
-## Reject a call
-
-Listen for the `call` event to obtain the `callId` and `callFrom` values, then call `rejectCall` to decline the incoming call.
-
-```typescript
-await sock.rejectCall(callId, callFrom)
-```
+For handling incoming calls, see [Handle WhatsApp calls](/advanced/calls).
