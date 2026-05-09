@@ -7,6 +7,10 @@ By default, Baileys holds your authentication credentials only in memory. When y
 
 ## useMultiFileAuthState
 
+<Card title="Not for production use" type="warning">
+  The useMultiFileAuthState function is not recommended for deployment in production. It uses the file state and there is no guarantee that its good at session management, and will cause auth errors.  Learn more at the end of this page on creating your own auth state.
+</Card>
+
 `useMultiFileAuthState` is the built-in utility for file-based session persistence. It stores credentials and Signal session keys as JSON files inside a folder you specify. Calling the returned `saveCreds` function whenever credentials change keeps the files up to date.
 
 ```typescript
