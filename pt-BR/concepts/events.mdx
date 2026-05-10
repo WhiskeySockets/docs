@@ -1,0 +1,360 @@
+---
+title: "Lidar com eventos em tempo real no Baileys"
+description: "O Baileys emite eventos tipados para mensagens, estado de conexão, grupos, contatos e mais."
+---
+
+O Baileys comunica tudo que acontece na sua conexão WhatsApp por um event emitter tipado disponível em `sock.ev`. Cada nome de evento mapeia para um payload específico definido em `BaileysEventMap`.
+
+## Escutando eventos
+
+Use `sock.ev.on` para se inscrever e `sock.ev.off` para sair.
+
+```typescript
+sock.ev.on('messages.upsert', ({ messages, type }) => {
+  console.log(`Received ${messages.length} message(s) of type "${type}"`)
+})
+
+const handler = ({ messages }) => { /* ... */ }
+sock.ev.on('messages.upsert', handler)
+sock.ev.off('messages.upsert', handler)
+```
+
+A interface `BaileysEventEmitter`:
+
+```typescript
+export interface BaileysEventEmitter {
+  on<T extends keyof BaileysEventMap>(event: T, listener: (arg: BaileysEventMap[T]) => void): void
+  off<T extends keyof BaileysEventMap>(event: T, listener: (arg: BaileysEventMap[T]) => void): void
+  removeAllListeners<T extends keyof BaileysEventMap>(event: T): void
+  emit<T extends keyof BaileysEventMap>(event: T, arg: BaileysEventMap[T]): boolean
+}
+```
+
+## O padrão `ev.process()`
+
+Para a maioria das aplicações, use `sock.ev.process` em vez de chamadas individuais a `sock.ev.on`. O callback recebe um mapa de todos os eventos que dispararam num único tick.
+
+```typescript
+sock.ev.process(async (events) => {
+  if (events['connection.update']) {
+    const { connection, lastDisconnect } = events['connection.update']
+    if (connection === 'close') {
+      const shouldReconnect =
+        (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
+      if (shouldReconnect) startSock()
+    }
+  }
+
+  if (events['creds.update']) {
+    await saveCreds()
+  }
+
+  if (events['messages.upsert']) {
+    const { messages, type } = events['messages.upsert']
+    if (type === 'notify') {
+      for (const msg of messages) {
+        // trata mensagem recebida
+      }
+    }
+  }
+})
+```
+
+<Tip>
+  `ev.process` agrupa eventos disparados no mesmo tick. Se uma sincronização entrega 500 mensagens e 200 atualizações juntas, seu handler recebe tudo numa chamada só.
+</Tip>
+
+## Referência de eventos
+
+### `connection.update`
+
+Dispara sempre que o estado do WebSocket muda. Payload é `Partial<ConnectionState>`:
+
+```typescript
+type ConnectionState = {
+  connection: 'open' | 'connecting' | 'close'
+  lastDisconnect?: { error: Boom | Error | undefined; date: Date }
+  isNewLogin?: boolean
+  qr?: string
+  receivedPendingNotifications?: boolean
+  isOnline?: boolean
+}
+```
+
+```typescript
+sock.ev.on('connection.update', (update) => {
+  const { connection, lastDisconnect, qr } = update
+
+  if (qr) {
+    // renderize o QR aqui
+  }
+
+  if (connection === 'close') {
+    const code = (lastDisconnect?.error as Boom)?.output?.statusCode
+    if (code !== DisconnectReason.loggedOut) {
+      startSock()
+    }
+  }
+})
+```
+
+### `creds.update`
+
+Dispara sempre que suas credenciais mudam. Você deve persistir imediatamente.
+
+```typescript
+sock.ev.on('creds.update', saveCreds)
+```
+
+### `messages.upsert`
+
+Evento principal para mensagens recebidas e enviadas.
+
+```typescript
+{
+  messages: WAMessage[]
+  type: 'notify' | 'append'
+  requestId?: string
+}
+```
+
+- `type: 'notify'` — mensagens em tempo real. Devem disparar notificações.
+- `type: 'append'` — mensagens de histórico/backfill. Não notifique.
+
+```typescript
+sock.ev.on('messages.upsert', ({ messages, type }) => {
+  if (type !== 'notify') return
+
+  for (const msg of messages) {
+    const text =
+      msg.message?.conversation ??
+      msg.message?.extendedTextMessage?.text
+    if (text) {
+      console.log(`[${msg.key.remoteJid}] ${text}`)
+    }
+  }
+})
+```
+
+<Warning>
+  Sempre itere com `for...of`. O array pode conter mais de uma mensagem por evento.
+</Warning>
+
+### `messages.update`
+
+Status de mensagens — recibos, reações, votos de enquete.
+
+```typescript
+sock.ev.on('messages.update', async (updates) => {
+  for (const { key, update } of updates) {
+    if (update.status) {
+      // 1 = enviado, 2 = recebido, 3 = lido, 4 = reproduzido
+      console.log(`Message ${key.id} status: ${update.status}`)
+    }
+
+    if (update.pollUpdates) {
+      const pollCreation = await getMessage(key)
+      if (pollCreation) {
+        const result = getAggregateVotesInPollMessage({
+          message: pollCreation,
+          pollUpdates: update.pollUpdates,
+        })
+        console.log('Poll vote aggregation:', result)
+      }
+    }
+  }
+})
+```
+
+### `messaging-history.set`
+
+Lote de sincronização de histórico do celular.
+
+```typescript
+sock.ev.on('messaging-history.set', ({ chats, contacts, messages, isLatest, progress, syncType }) => {
+  console.log(
+    `History sync: ${chats.length} chats, ${contacts.length} contacts, ` +
+    `${messages.length} messages (progress: ${progress}%, latest: ${isLatest})`
+  )
+})
+```
+
+<Info>
+  O histórico é entregue em pedaços em ordem cronológica reversa. `isLatest` no último pedaço indica que terminou.
+</Info>
+
+### `chats.upsert` / `chats.update` / `chats.delete`
+
+```typescript
+sock.ev.on('chats.upsert', (chats) => { /* novos chats */ })
+sock.ev.on('chats.update', (updates) => { /* updates parciais */ })
+sock.ev.on('chats.delete', (jids) => { /* chats deletados */ })
+```
+
+### `contacts.upsert` / `contacts.update`
+
+```typescript
+sock.ev.on('contacts.upsert', (contacts) => {
+  for (const contact of contacts) {
+    console.log(`Contact: ${contact.id} — ${contact.name ?? contact.notify}`)
+  }
+})
+
+sock.ev.on('contacts.update', async (updates) => {
+  for (const contact of updates) {
+    if (typeof contact.imgUrl !== 'undefined') {
+      const url = contact.imgUrl
+        ? await sock.profilePictureUrl(contact.id!).catch(() => null)
+        : null
+      console.log(`${contact.id} has a new profile picture: ${url}`)
+    }
+  }
+})
+```
+
+### `groups.upsert` / `groups.update` / `group-participants.update`
+
+```typescript
+sock.ev.on('groups.upsert', (groups) => { /* você foi adicionado */ })
+sock.ev.on('groups.update', (updates) => { /* assunto/desc/settings */ })
+
+sock.ev.on('group-participants.update', ({ id, author, participants, action }) => {
+  // action: 'add' | 'remove' | 'promote' | 'demote'
+  console.log(`Group ${id}: ${action} by ${author}`)
+})
+```
+
+### `presence.update`
+
+```typescript
+sock.ev.on('presence.update', ({ id, presences }) => {
+  for (const [jid, data] of Object.entries(presences)) {
+    console.log(`${jid} in ${id}: ${data.lastKnownPresence}`)
+  }
+})
+
+await sock.presenceSubscribe(jid)
+```
+
+### `call`
+
+```typescript
+sock.ev.on('call', async (calls) => {
+  for (const call of calls) {
+    if (call.status === 'offer') {
+      await sock.rejectCall(call.id, call.from)
+    }
+  }
+})
+```
+
+## Sequência de eventos na primeira conexão
+
+<Steps>
+  <Step title="connection.update — connecting">
+    O socket inicia o handshake. `connection` é `'connecting'`.
+  </Step>
+  <Step title="connection.update — QR ou open">
+    Se faltam credenciais, `qr` é populado. Após confirmação, `connection` vira `'open'`.
+  </Step>
+  <Step title="messaging-history.set (lotes)">
+    Se `syncFullHistory` for `true`, o celular envia mensagens passadas em pedaços.
+  </Step>
+  <Step title="connection.update — receivedPendingNotifications">
+    Após o histórico, `receivedPendingNotifications` vira `true`.
+  </Step>
+  <Step title="Eventos em tempo real">
+    Daqui pra frente, eventos disparam em tempo real.
+  </Step>
+</Steps>
+
+## Exemplo completo com `ev.process`
+
+```typescript
+import makeWASocket, {
+  DisconnectReason,
+  fetchLatestBaileysVersion,
+  getAggregateVotesInPollMessage,
+  makeCacheableSignalKeyStore,
+  useMultiFileAuthState,
+} from '@whiskeysockets/baileys'
+import { Boom } from '@hapi/boom'
+import P from 'pino'
+
+const logger = P({ level: 'silent' })
+
+async function startSock() {
+  const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
+  const { version } = await fetchLatestBaileysVersion()
+
+  const sock = makeWASocket({
+    version,
+    logger,
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
+  })
+
+  sock.ev.process(async (events) => {
+    if (events['connection.update']) {
+      const { connection, lastDisconnect, qr } = events['connection.update']
+      if (connection === 'close') {
+        const shouldReconnect =
+          (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
+        if (shouldReconnect) startSock()
+      }
+    }
+
+    if (events['creds.update']) {
+      await saveCreds()
+    }
+
+    if (events['messaging-history.set']) {
+      const { chats, contacts, messages, isLatest } = events['messaging-history.set']
+      console.log(`History: ${chats.length} chats, ${messages.length} messages, latest=${isLatest}`)
+    }
+
+    if (events['messages.upsert']) {
+      const { messages, type } = events['messages.upsert']
+      if (type === 'notify') {
+        for (const msg of messages) {
+          console.log('New message from', msg.key.remoteJid)
+        }
+      }
+    }
+
+    if (events['messages.update']) {
+      for (const { key, update } of events['messages.update']) {
+        if (update.pollUpdates) {
+          const pollCreation = await getMessage(key)
+          if (pollCreation) {
+            console.log(
+              'Poll results:',
+              getAggregateVotesInPollMessage({
+                message: pollCreation,
+                pollUpdates: update.pollUpdates,
+              })
+            )
+          }
+        }
+      }
+    }
+
+    if (events['group-participants.update']) {
+      const { id, participants, action } = events['group-participants.update']
+      console.log(`Group ${id}: ${action} — ${participants.map(p => p.id).join(', ')}`)
+    }
+
+    if (events['call']) {
+      for (const call of events['call']) {
+        if (call.status === 'offer') {
+          await sock.rejectCall(call.id, call.from)
+        }
+      }
+    }
+  })
+
+  return sock
+}
+```

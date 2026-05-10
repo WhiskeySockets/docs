@@ -1,0 +1,26 @@
+---
+title: "Migrar para o Baileys v8"
+description: "O que esperar no Baileys v8: arquitetura baseada em classes, integração com whatsmeow e novo sistema de autenticação."
+---
+
+<Note>
+  O Baileys v8 está em desenvolvimento ativo. Detalhes podem mudar antes do release.
+</Note>
+
+## O que há de novo
+
+- **Arquitetura baseada em classes.** v8 substitui o factory atual por classes.
+- **Integração com whatsmeow.** v8 é a base para adotar código do projeto [whatsmeow](https://github.com/tulir/whatsmeow).
+- **Novo sistema de autenticação.** Você precisa rodar o helper de migração antes de subir o runtime.
+
+## Antes de atualizar
+
+1. Faça backup do auth state.
+2. Rode o helper de migração v8 num script separado.
+3. Após todos migrados, faça deploy do runtime v8.
+
+Clientes não migrados não conectam no v8.
+
+## Referência
+
+[GitHub releases](https://github.com/WhiskeySockets/Baileys/releases). Link curto: [whiskey.so/migrate-latest](https://whiskey.so/migrate-latest).

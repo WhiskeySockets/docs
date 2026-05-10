@@ -1,0 +1,147 @@
+---
+title: "Salvar e restaurar sessões do WhatsApp"
+description: "Persista as credenciais de autenticação do Baileys em disco para nunca precisar reescanear o QR. Cobre useMultiFileAuthState e padrões customizados."
+---
+
+Por padrão, o Baileys mantém suas credenciais de autenticação apenas em memória. Quando o processo reinicia, a sessão se perde e você precisa escanear o QR de novo. Persistir o estado de autenticação resolve isso.
+
+## `useMultiFileAuthState`
+
+`useMultiFileAuthState` é o utilitário interno para persistir sessão em arquivos. Ele guarda credenciais e chaves de sessão Signal como arquivos JSON dentro de uma pasta.
+
+```typescript
+import makeWASocket, { useMultiFileAuthState } from '@whiskeysockets/baileys'
+
+const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+
+const sock = makeWASocket({
+  auth: state,
+})
+
+sock.ev.on('connection.update', ({ qr }) => {
+  if (qr) console.log('QR:', qr)
+})
+
+sock.ev.on('creds.update', saveCreds)
+```
+
+## Como o estado de autenticação é estruturado
+
+O objeto `state` está em conformidade com o tipo `AuthenticationState`:
+
+```typescript
+type AuthenticationState = {
+  creds: AuthenticationCreds
+  keys: SignalKeyStore
+}
+```
+
+Ambas devem ser salvas e restauradas juntas. Perder uma quebra a sessão.
+
+### Salvando chaves do Signal
+
+<Warning>
+  Toda vez que uma mensagem é enviada ou recebida, o Baileys pode atualizar as chaves de sessão Signal armazenadas em `authState.keys`. Se você não salvar essas atualizações, mensagens vão falhar para destinatários cujas sessões foram rotacionadas. Sempre escute `creds.update` e chame sua função de salvar prontamente.
+</Warning>
+
+## Melhorando a performance com `makeCacheableSignalKeyStore`
+
+Em produção, toda mensagem dispara consultas a chaves Signal que tocam o disco. Envolver seu key store com `makeCacheableSignalKeyStore` adiciona uma camada de cache em memória.
+
+```typescript
+import makeWASocket, {
+  useMultiFileAuthState,
+  makeCacheableSignalKeyStore,
+} from '@whiskeysockets/baileys'
+import P from 'pino'
+
+const logger = P({ level: 'silent' })
+const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+
+const sock = makeWASocket({
+  auth: {
+    creds: state.creds,
+    keys: makeCacheableSignalKeyStore(state.keys, logger),
+  },
+})
+
+sock.ev.on('creds.update', saveCreds)
+```
+
+## Exemplo completo de reconexão
+
+```typescript
+import makeWASocket, {
+  DisconnectReason,
+  useMultiFileAuthState,
+  makeCacheableSignalKeyStore,
+} from '@whiskeysockets/baileys'
+import { Boom } from '@hapi/boom'
+import P from 'pino'
+
+const logger = P({ level: 'silent' })
+
+async function connectToWhatsApp() {
+  const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+
+  const sock = makeWASocket({
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
+  })
+
+  sock.ev.on('connection.update', ({ connection, lastDisconnect }) => {
+    if (connection === 'close') {
+      const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode
+      const shouldReconnect = statusCode !== DisconnectReason.loggedOut
+
+      if (shouldReconnect) {
+        connectToWhatsApp()
+      } else {
+        console.log('Logged out. Delete the auth folder and re-scan to reconnect.')
+      }
+    } else if (connection === 'open') {
+      console.log('Connected to WhatsApp')
+    }
+  })
+
+  sock.ev.on('creds.update', saveCreds)
+}
+
+connectToWhatsApp()
+```
+
+## Serialização JSON confiável com `BufferJSON`
+
+A implementação de `useMultiFileAuthState` serializa credenciais usando `BufferJSON`, um utilitário que lida com `Buffer` e `Uint8Array` durante `JSON.stringify` / `JSON.parse`.
+
+```typescript
+import { BufferJSON } from '@whiskeysockets/baileys'
+
+const serialized = JSON.stringify(creds, BufferJSON.replacer)
+const creds = JSON.parse(serialized, BufferJSON.reviver)
+```
+
+## Construindo um auth store em banco de dados
+
+Para produção, implemente um `AuthenticationState` respaldado por banco. Sua implementação deve satisfazer:
+
+```typescript
+type SignalKeyStore = {
+  get<T extends keyof SignalDataTypeMap>(
+    type: T,
+    ids: string[]
+  ): Promise<{ [id: string]: SignalDataTypeMap[T] }>
+  set(data: SignalDataSet): Promise<void>
+  clear?(): Promise<void>
+}
+```
+
+<Tip>
+  Estude como `useMultiFileAuthState` funciona — a implementação em arquivos espelha a interface que seu store de banco precisa satisfazer.
+</Tip>
+
+<Warning>
+  Nunca commite sua pasta de auth ou credenciais de banco. Os arquivos em `auth_info_baileys/` contêm chaves Signal de longa duração equivalentes a uma chave SSH privada.
+</Warning>

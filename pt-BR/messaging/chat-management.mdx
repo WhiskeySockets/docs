@@ -1,0 +1,155 @@
+---
+title: "Gerenciar conversas: arquivar, silenciar, fixar e deletar"
+description: "Use chatModify para arquivar, silenciar, marcar como lido, fixar, favoritar ou deletar conversas e mensagens."
+---
+
+`sock.chatModify(modification, jid)` envia atualizações de app-state cifradas.
+
+<Warning>
+  Se você enviar um `chatModify` malformado, o WhatsApp pode te deslogar de todos os aparelhos. Sempre passe o `lastMessages` correto.
+</Warning>
+
+## Arquivar uma conversa
+
+```typescript
+const lastMsgInChat = await getLastMessageInChat(jid)
+await sock.chatModify({ archive: true, lastMessages: [lastMsgInChat] }, jid)
+```
+
+## Silenciar / dessilenciar
+
+| Duração | Milissegundos |
+| --- | --- |
+| Dessilenciar | `null` |
+| 8 horas | `28800000` |
+| 7 dias | `604800000` |
+
+```typescript
+await sock.chatModify({ mute: 8 * 60 * 60 * 1000 }, jid)
+await sock.chatModify({ mute: null }, jid)
+```
+
+## Marcar como lida ou não lida
+
+```typescript
+const lastMsgInChat = await getLastMessageInChat(jid)
+await sock.chatModify({ markRead: false, lastMessages: [lastMsgInChat] }, jid)
+```
+
+## Deletar mensagem só para você
+
+```typescript
+await sock.chatModify(
+    {
+        clear: {
+            messages: [
+                {
+                    id: 'ATWYHDNNWU81732J',
+                    fromMe: true,
+                    timestamp: '1654823909'
+                }
+            ]
+        }
+    },
+    jid
+)
+```
+
+## Deletar uma conversa
+
+```typescript
+const lastMsgInChat = await getLastMessageInChat(jid)
+await sock.chatModify({
+        delete: true,
+        lastMessages: [
+            {
+                key: lastMsgInChat.key,
+                messageTimestamp: lastMsgInChat.messageTimestamp
+            }
+        ]
+    },
+    jid
+)
+```
+
+## Fixar / desfixar conversa
+
+```typescript
+await sock.chatModify({
+        pin: true
+    },
+    jid
+)
+```
+
+## Favoritar / desfavoritar mensagem
+
+```typescript
+await sock.chatModify({
+        star: {
+            messages: [
+                {
+                    id: 'messageID',
+                    fromMe: true
+                }
+            ],
+            star: true
+        }
+    },
+    jid
+)
+```
+
+## Consultas de usuário
+
+### Verificar se um JID existe no WhatsApp
+
+```typescript
+const [result] = await sock.onWhatsApp(jid)
+if (result.exists) console.log (`${jid} exists on WhatsApp, as jid: ${result.jid}`)
+```
+
+### Consultar histórico
+
+```typescript
+const msg = await getOldestMessageInChat(jid)
+await sock.fetchMessageHistory(
+    50,
+    msg.key,
+    msg.messageTimestamp
+)
+```
+
+<Note>
+  Mensagens chegam pelo evento `messaging-history.set`, não retornadas diretamente.
+</Note>
+
+### Buscar texto de status
+
+```typescript
+const status = await sock.fetchStatus(jid)
+console.log('status: ' + status)
+```
+
+### Buscar foto de perfil
+
+```typescript
+const ppUrl = await sock.profilePictureUrl(jid)
+const ppUrl = await sock.profilePictureUrl(jid, 'image') // alta resolução
+```
+
+### Buscar perfil business
+
+```typescript
+const profile = await sock.getBusinessProfile(jid)
+console.log('business description: ' + profile.description + ', category: ' + profile.category)
+```
+
+## Atualizar seu perfil
+
+```typescript
+await sock.updateProfileStatus('Hello World!')
+await sock.updateProfileName('My name')
+await sock.updateProfilePicture(jid, { url: './new-profile-picture.jpeg' })
+await sock.removeProfilePicture(jid)
+```

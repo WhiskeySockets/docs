@@ -6,7 +6,7 @@ description: "Authenticate your Baileys socket by scanning a QR code in the What
 QR code authentication is the default way to link Baileys to your WhatsApp account. Baileys emits a QR string on the `connection.update` event, which you render however you like — to the terminal, to an image, or to your frontend. Open WhatsApp on your phone, navigate to **Linked Devices**, and scan the code to complete the link.
 
 <Warning>
-  The `printQRInTerminal` socket option is **deprecated**. Listen for the `qr` field on the `connection.update` event and render the code yourself.
+  The `printQRInTerminal` socket option is **deprecated** and will be removed in a future version. Listen for the `qr` field on the `connection.update` event and render the code yourself.
 </Warning>
 
 ## Basic setup
@@ -49,45 +49,9 @@ QR code authentication is the default way to link Baileys to your WhatsApp accou
   </Step>
 </Steps>
 
-## Customizing the browser identity
+## Customizing the browser identity and receiving full history
 
-When you connect with a QR code, WhatsApp sees your client as a browser. You can control how it identifies itself using the `Browsers` constant exported from Baileys. This affects the name shown in WhatsApp's **Linked Devices** list.
-
-```typescript
-import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
-
-// Show as "Ubuntu — My App"
-const sock = makeWASocket({
-  browser: Browsers.ubuntu('My App'),
-})
-```
-
-A few ready-made presets are available:
-
-| Preset | Example |
-| --- | --- |
-| `Browsers.ubuntu('My App')` | Ubuntu — My App |
-| `Browsers.macOS('Desktop')` | macOS — Desktop |
-| `Browsers.windows('My App')` | Windows — My App |
-
-## Receiving full message history
-
-By default, Baileys connects with a Chrome browser profile, which limits how much message history WhatsApp delivers on the initial sync. To request the full history, set `syncFullHistory: true` and use the `Browsers.macOS('Desktop')` preset, which WhatsApp treats as a desktop client eligible for extended history.
-
-```typescript
-import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
-
-const sock = makeWASocket({
-  browser: Browsers.macOS('Desktop'),
-  syncFullHistory: true,
-})
-```
-
-History messages arrive asynchronously via the `messaging-history.set` event after the connection opens.
-
-<Note>
-  Requesting full history can significantly increase startup time and memory usage on accounts with large chat histories.
-</Note>
+The browser identity Baileys presents to WhatsApp affects how your client appears in **Linked Devices** and how much message history is delivered on first sync. Both options are configured via the socket — see [Configure the Baileys socket connection](/concepts/socket-config) for the `Browsers` presets and the `syncFullHistory` flag.
 
 ## Keeping the connection alive
 

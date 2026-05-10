@@ -1,0 +1,36 @@
+---
+title: "Protocolo USync"
+description: "Use o protocolo USync (e MEX) para consultar metadados de usuário, mapeamentos LID/PN, listas de aparelhos e outros dados de diretório."
+---
+
+USync é o protocolo de diretório do WhatsApp. É o que dá poder ao `onWhatsApp()`, à resolução LID/PN, a buscas de listas de aparelhos e consultas similares.
+
+<Note>
+  O suporte a USync é intencionalmente baixo nível. Se existir um helper de alto nível (`onWhatsApp`, `getLIDsForPNs` etc.), prefira-o.
+</Note>
+
+## Quando usar USync
+
+- Resolver números para LIDs em massa.
+- Consultar listas de aparelhos.
+- Sondar metadados que o Baileys ainda não envolve.
+
+## Construindo uma query USync
+
+Uma query consiste em:
+
+- Um tipo de query (ex.: lookup de contato ou lista de aparelhos).
+- Lista de usuários identificados por JID/PN/LID.
+- Os protocolos (subqueries) que você quer de cada usuário.
+
+Veja `src/WAUSync` no repositório do Baileys para a lista canônica de classes.
+
+## Queries MEX
+
+O Baileys também suporta MEX (camada de query estilo GraphQL) para canais, comunidades, catálogos. Procure `executeUSyncQuery` no código para exemplos.
+
+## Avisos
+
+- O WhatsApp pode rate-limitar queries USync agressivas.
+- Schemas mudam ocasionalmente.
+- USync é não documentado externamente — sujeito a mudança sem aviso.

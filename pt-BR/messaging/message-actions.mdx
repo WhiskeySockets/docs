@@ -1,0 +1,57 @@
+---
+title: "Editar, deletar e ler mensagens do WhatsApp"
+description: "Delete mensagens para todos, edite mensagens enviadas, marque como lidas e atualize sua presença."
+---
+
+## Deletar mensagem para todos
+
+```typescript
+const msg = await sock.sendMessage(jid, { text: 'hello word' })
+await sock.sendMessage(jid, { delete: msg.key })
+```
+
+<Note>
+  Para deletar só para você, use `sock.chatModify` com `clear`. Veja [gerenciar conversas](/pt-BR/messaging/chat-management).
+</Note>
+
+## Editar mensagem
+
+```typescript
+await sock.sendMessage(jid, {
+      text: 'updated text goes here',
+      edit: response.key,
+    });
+```
+
+## Marcar como lida
+
+O Baileys exige marcar keys individuais — não dá para marcar uma conversa inteira.
+
+```typescript
+const key: WAMessageKey
+await sock.readMessages([key])
+```
+
+## Atualizar presença
+
+```typescript
+await sock.sendPresenceUpdate('available', jid)
+```
+
+| Valor | Significado |
+| --- | --- |
+| `available` | Online |
+| `unavailable` | Offline |
+| `composing` | Digitando |
+| `recording` | Gravando áudio |
+| `paused` | Parou de digitar |
+
+<Warning>
+  Atualizações de presença expiram em ~10 segundos. Para sustentar "digitando…", envie repetidamente.
+</Warning>
+
+<Note>
+  Marque o Baileys como offline com `sock.sendPresenceUpdate('unavailable')` se quiser pushes no celular enquanto o bot roda.
+</Note>
+
+Para chamadas, veja [Lidar com chamadas do WhatsApp](/pt-BR/advanced/calls).

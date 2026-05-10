@@ -1,0 +1,240 @@
+---
+title: "Implementar um data store para o Baileys"
+description: "O Baileys não tem persistência embutida. Aprenda a usar um store em memória ou construir um custom data store."
+---
+
+O Baileys é um cliente WebSocket sem estado. Ele processa e emite eventos, mas não armazena nada entre reinicializações. Sua aplicação é responsável por construir e manter esse estado a partir dos eventos que o Baileys emite.
+
+---
+
+## Por que você precisa de um store
+
+- **Reentrega de mensagens** — quando uma mensagem falha ao decifrar, o WhatsApp pede que o remetente reenvie. O Baileys chama `getMessage` para recuperar o texto plano.
+- **Decifrar votos de enquete** — votos chegam como eventos `messages.update` cifrados. Para agregar, você precisa da mensagem original da enquete.
+- **Consultas de histórico** — `sock.fetchMessageHistory` carrega mensagens antigas, entregues via `messaging-history.set`.
+
+---
+
+## O store em memória
+
+<Warning>
+  `makeInMemoryStore` foi removido no v7. Se você está atualizando do v6, precisa implementar seu próprio store.
+</Warning>
+
+```typescript
+import makeWASocket, {
+  WAMessage,
+  WAMessageKey,
+  Chat,
+  Contact,
+  proto,
+  useMultiFileAuthState,
+} from '@whiskeysockets/baileys'
+
+const messages = new Map<string, WAMessage>()
+const chats = new Map<string, Chat>()
+const contacts = new Map<string, Contact>()
+
+function messageKey(key: WAMessageKey): string {
+  return `${key.remoteJid}:${key.id}`
+}
+
+const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
+
+const sock = makeWASocket({
+  auth: state,
+  getMessage: async (key) => {
+    return messages.get(messageKey(key))?.message ?? undefined
+  },
+})
+
+sock.ev.process(async (events) => {
+  if (events['creds.update']) {
+    await saveCreds()
+  }
+
+  if (events['messages.upsert']) {
+    for (const msg of events['messages.upsert'].messages) {
+      if (msg.key.id) {
+        messages.set(messageKey(msg.key), msg)
+      }
+    }
+  }
+
+  if (events['messages.update']) {
+    for (const { key, update } of events['messages.update']) {
+      const existing = messages.get(messageKey(key))
+      if (existing) {
+        messages.set(messageKey(key), { ...existing, ...update })
+      }
+    }
+  }
+
+  if (events['messaging-history.set']) {
+    for (const msg of events['messaging-history.set'].messages) {
+      if (msg.key.id) {
+        messages.set(messageKey(msg.key), msg)
+      }
+    }
+    for (const chat of events['messaging-history.set'].chats) {
+      chats.set(chat.id, chat)
+    }
+    for (const contact of events['messaging-history.set'].contacts) {
+      contacts.set(contact.id, contact)
+    }
+  }
+
+  if (events['chats.upsert']) {
+    for (const chat of events['chats.upsert']) {
+      chats.set(chat.id, chat)
+    }
+  }
+  if (events['chats.update']) {
+    for (const update of events['chats.update']) {
+      const existing = chats.get(update.id!)
+      if (existing) {
+        chats.set(update.id!, { ...existing, ...update })
+      }
+    }
+  }
+  if (events['chats.delete']) {
+    for (const jid of events['chats.delete']) {
+      chats.delete(jid)
+    }
+  }
+
+  if (events['contacts.upsert']) {
+    for (const contact of events['contacts.upsert']) {
+      contacts.set(contact.id, contact)
+    }
+  }
+  if (events['contacts.update']) {
+    for (const update of events['contacts.update']) {
+      if (update.id) {
+        const existing = contacts.get(update.id)
+        contacts.set(update.id, { ...existing, ...update } as Contact)
+      }
+    }
+  }
+})
+```
+
+---
+
+## Produção: store em banco de dados
+
+### SQLite (com `better-sqlite3`)
+
+```typescript
+import Database from 'better-sqlite3'
+import { WAMessageKey, proto } from '@whiskeysockets/baileys'
+
+const db = new Database('./baileys.db')
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS messages (
+    jid TEXT NOT NULL,
+    id TEXT NOT NULL,
+    data TEXT NOT NULL,
+    PRIMARY KEY (jid, id)
+  )
+`)
+
+const insertMsg = db.prepare(
+  'INSERT OR REPLACE INTO messages (jid, id, data) VALUES (?, ?, ?)'
+)
+const getMsg = db.prepare(
+  'SELECT data FROM messages WHERE jid = ? AND id = ?'
+)
+
+export async function saveMessage(msg: proto.IWebMessageInfo) {
+  if (msg.key.remoteJid && msg.key.id) {
+    insertMsg.run(msg.key.remoteJid, msg.key.id, JSON.stringify(msg.message))
+  }
+}
+
+export async function getMessage(
+  key: WAMessageKey
+): Promise<proto.IMessage | undefined> {
+  const row = getMsg.get(key.remoteJid, key.id) as { data: string } | undefined
+  return row ? JSON.parse(row.data) : undefined
+}
+```
+
+```typescript
+const sock = makeWASocket({
+  auth: state,
+  getMessage,
+})
+
+sock.ev.on('messages.upsert', ({ messages }) => {
+  for (const msg of messages) {
+    saveMessage(msg)
+  }
+})
+```
+
+### Redis
+
+```typescript
+import { createClient } from 'redis'
+import { WAMessageKey, proto } from '@whiskeysockets/baileys'
+
+const redis = createClient()
+await redis.connect()
+
+export async function saveMessage(msg: proto.IWebMessageInfo) {
+  if (!msg.key.remoteJid || !msg.key.id || !msg.message) return
+  const key = `msg:${msg.key.remoteJid}:${msg.key.id}`
+  await redis.set(key, JSON.stringify(msg.message), { EX: 60 * 60 * 24 * 30 })
+}
+
+export async function getMessage(
+  key: WAMessageKey
+): Promise<proto.IMessage | undefined> {
+  const raw = await redis.get(`msg:${key.remoteJid}:${key.id}`)
+  return raw ? JSON.parse(raw) : undefined
+}
+```
+
+### Consultando mensagens
+
+```typescript
+const listMessages = db.prepare(`
+  SELECT data FROM messages
+  WHERE jid = ?
+  ORDER BY rowid DESC
+  LIMIT ?
+`)
+
+export function loadMessages(jid: string, count: number): proto.IMessage[] {
+  const rows = listMessages.all(jid, count) as { data: string }[]
+  return rows.map(r => JSON.parse(r.data)).reverse()
+}
+```
+
+---
+
+## Checklist
+
+<Steps>
+  <Step title="Implemente getMessage em SocketConfig">
+    Sem isso, reentregas e decifragem de votos não funcionam.
+  </Step>
+  <Step title="Popule o store a partir de messages.upsert">
+    Guarde o objeto `WAMessage` completo, não só o texto.
+  </Step>
+  <Step title="Trate messaging-history.set para inserts em lote">
+    Use insert em lote para não martelar o banco.
+  </Step>
+  <Step title="Mantenha estado de chats e contatos atualizado">
+    Escute `chats.*` e `contacts.*`.
+  </Step>
+  <Step title="Persista o estado de auth separadamente">
+    Auth state e mensagens são coisas diferentes. Ambos precisam sobreviver a reinicializações.
+  </Step>
+</Steps>
+
+<Warning>
+  Nunca guarde estado de autenticação na mesma tabela das mensagens. Auth state contém chaves Signal de longa duração — trate como uma chave SSH privada.
+</Warning>

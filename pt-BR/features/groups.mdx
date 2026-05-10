@@ -1,0 +1,198 @@
+---
+title: "Criar, configurar e gerenciar grupos do WhatsApp no Baileys"
+description: "Crie e gerencie grupos: adicione/remova participantes, atualize configurações, invites, aprove pedidos e configure mensagens efêmeras."
+---
+
+<Warning>
+  Você precisa ser admin para realizar a maioria das operações desta página. Tentar como membro comum lança erro.
+</Warning>
+
+## Criar um grupo
+
+```typescript
+const group = await sock.groupCreate('My Fab Group', ['1234@s.whatsapp.net', '4564@s.whatsapp.net'])
+console.log('created group with id: ' + group.gid)
+await sock.sendMessage(group.id, { text: 'hello there' })
+```
+
+## Adicionar, remover, promover ou rebaixar
+
+```typescript
+await sock.groupParticipantsUpdate(
+    jid,
+    ['abcd@s.whatsapp.net', 'efgh@s.whatsapp.net'],
+    'add' // 'remove' | 'demote' | 'promote'
+)
+```
+
+## Atualizar nome e descrição
+
+<CodeGroup>
+
+```typescript Mudar nome
+await sock.groupUpdateSubject(jid, 'New Subject!')
+```
+
+```typescript Mudar descrição
+await sock.groupUpdateDescription(jid, 'New Description!')
+```
+
+</CodeGroup>
+
+## Mudar configurações do grupo
+
+```typescript
+await sock.groupSettingUpdate(jid, 'announcement')
+await sock.groupSettingUpdate(jid, 'not_announcement')
+await sock.groupSettingUpdate(jid, 'unlocked')
+await sock.groupSettingUpdate(jid, 'locked')
+```
+
+| Valor | Efeito |
+| --- | --- |
+| `announcement` | Apenas admins enviam |
+| `not_announcement` | Todos os membros enviam |
+| `locked` | Apenas admins mudam configurações |
+| `unlocked` | Todos os membros mudam configurações |
+
+## Sair do grupo
+
+```typescript
+await sock.groupLeave(jid)
+```
+
+## Links de convite
+
+### Pegar o código
+
+```typescript
+const code = await sock.groupInviteCode(jid)
+const link = 'https://chat.whatsapp.com/' + code
+```
+
+### Revogar o código
+
+```typescript
+const code = await sock.groupRevokeInvite(jid)
+```
+
+### Entrar pelo código
+
+```typescript
+const response = await sock.groupAcceptInvite(code)
+```
+
+<Note>
+  O `code` não inclui o prefixo `https://chat.whatsapp.com/`.
+</Note>
+
+### Info do grupo a partir do código
+
+```typescript
+const response = await sock.groupGetInviteInfo(code)
+```
+
+### Entrar via `groupInviteMessage`
+
+```typescript
+const response = await sock.groupAcceptInviteV4(jid, groupInviteMessage)
+```
+
+## Consultar metadados do grupo
+
+```typescript
+const metadata = await sock.groupMetadata(jid)
+console.log(metadata.id + ', title: ' + metadata.subject + ', description: ' + metadata.desc)
+```
+
+`GroupMetadata` inclui:
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `id` | `string` | JID do grupo |
+| `subject` | `string` | Nome |
+| `desc` | `string \| undefined` | Descrição |
+| `owner` | `string \| undefined` | JID do criador |
+| `participants` | `GroupParticipant[]` | Lista com flags de admin |
+| `ephemeralDuration` | `number \| undefined` | Timer ativo de mensagens efêmeras (segundos) |
+| `announce` | `boolean \| undefined` | `true` quando só admins enviam |
+| `restrict` | `boolean \| undefined` | `true` quando só admins mudam configurações |
+| `memberAddMode` | `boolean \| undefined` | `true` quando todos podem adicionar membros |
+| `joinApprovalMode` | `boolean \| undefined` | `true` quando entradas precisam de aprovação |
+
+### Listar todos os grupos participados
+
+```typescript
+const response = await sock.groupFetchAllParticipating()
+```
+
+## Aprovações de entrada
+
+### Listar pedidos pendentes
+
+```typescript
+const response = await sock.groupRequestParticipantsList(jid)
+```
+
+### Aprovar ou rejeitar
+
+```typescript
+const response = await sock.groupRequestParticipantsUpdate(
+    jid,
+    ['abcd@s.whatsapp.net', 'efgh@s.whatsapp.net'],
+    'approve' // ou 'reject'
+)
+```
+
+## Mensagens efêmeras
+
+```typescript
+await sock.groupToggleEphemeral(jid, 86400)
+```
+
+| Duração | Segundos |
+| --- | --- |
+| Off | `0` |
+| 24 horas | `86400` |
+| 7 dias | `604800` |
+| 90 dias | `7776000` |
+
+## Mudar quem pode adicionar membros
+
+```typescript
+await sock.groupMemberAddMode(
+    jid,
+    'all_member_add' // ou 'admin_add'
+)
+```
+
+| Modo | Efeito |
+| --- | --- |
+| `all_member_add` | Qualquer membro pode adicionar |
+| `admin_add` | Apenas admins podem adicionar |
+
+## Cache de metadados de grupo
+
+```typescript
+import NodeCache from '@cacheable/node-cache'
+
+const groupCache = new NodeCache({ stdTTL: 5 * 60, useClones: false })
+
+const sock = makeWASocket({
+    cachedGroupMetadata: async (jid) => groupCache.get(jid)
+})
+
+sock.ev.on('groups.update', async ([event]) => {
+    const metadata = await sock.groupMetadata(event.id)
+    groupCache.set(event.id, metadata)
+})
+
+sock.ev.on('group-participants.update', async (event) => {
+    const metadata = await sock.groupMetadata(event.id)
+    groupCache.set(event.id, metadata)
+})
+```
+
+<Tip>
+  Cachear metadados reduz latência e queries IQ ao WhatsApp, especialmente em bots com muitos grupos.
+</Tip>

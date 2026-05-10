@@ -1,0 +1,74 @@
+---
+title: "Enviar transmissões e Stories do WhatsApp com o Baileys"
+description: "Publique status (Stories) e envie mensagens a listas de transmissão."
+---
+
+| Alvo | Formato JID |
+| --- | --- |
+| Lista de transmissão | `[timestamp de criação]@broadcast` |
+| Status (Stories) | `status@broadcast` |
+
+## Enviar transmissão ou status
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        image: {
+            url: url
+        },
+        caption: caption
+    },
+    {
+        backgroundColor: backgroundColor,
+        font: font,
+        statusJidList: statusJidList,
+        broadcast: true
+    }
+)
+```
+
+| Opção | Descrição |
+| --- | --- |
+| `broadcast` | `true` para habilitar modo de transmissão |
+| `statusJidList` | Array de JIDs que vão receber este status |
+| `backgroundColor` | Cor de fundo para status de texto |
+| `font` | Estilo de fonte para status de texto |
+
+<Note>
+  `statusJidList` é obrigatório ao publicar em `status@broadcast`.
+</Note>
+
+## Tipos suportados
+
+| Tipo | Caso de uso |
+| --- | --- |
+| `extendedTextMessage` | Status de texto com fundo/fonte |
+| `imageMessage` | Status de foto |
+| `videoMessage` | Status de vídeo |
+| `voiceMessage` | Status de áudio |
+
+Veja `AnyRegularMessageContent` e `MiscMessageGenerationOptions`.
+
+## Enviar para lista de transmissão
+
+```typescript
+await sock.sendMessage('1234567890123456789@broadcast', { text: 'Hello everyone!' })
+```
+
+## Consultar nome e destinatários
+
+```typescript
+const bList = await sock.getBroadcastListInfo('1234@broadcast')
+console.log(`list name: ${bList.name}, recps: ${bList.recipients}`)
+```
+
+## Limitações
+
+<Warning>
+  O WhatsApp Web não suporta criar novas listas de transmissão.
+</Warning>
+
+- Listas devem ser criadas no app móvel primeiro.
+- Cada JID é derivado do timestamp de criação.
+- Deletar via `chatModify` é suportado, criar não.

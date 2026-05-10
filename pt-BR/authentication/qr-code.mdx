@@ -1,0 +1,92 @@
+---
+title: "Conectar com QR code"
+description: "Autentique seu socket Baileys escaneando um QR code no app do WhatsApp. Cobre o evento connection.update e opções de renderização."
+---
+
+A autenticação por QR code é a forma padrão de vincular o Baileys à sua conta do WhatsApp. O Baileys emite uma string de QR pelo evento `connection.update`, que você pode renderizar como quiser — no terminal, em uma imagem ou no seu frontend. Abra o WhatsApp no celular, vá em **Aparelhos conectados** e escaneie o código para concluir a vinculação.
+
+<Warning>
+  A opção `printQRInTerminal` está **obsoleta** e será removida numa versão futura. Escute o campo `qr` em `connection.update` e renderize o código você mesmo.
+</Warning>
+
+## Configuração básica
+
+<Steps>
+  <Step title="Instale o Baileys">
+    Se ainda não fez isso, adicione o Baileys ao seu projeto.
+
+    ```bash
+    npm install @whiskeysockets/baileys qrcode-terminal
+    ```
+  </Step>
+
+  <Step title="Crie o socket e escute a string de QR">
+    A string de QR é entregue pelo evento `connection.update`. Use [`qrcode-terminal`](https://www.npmjs.com/package/qrcode-terminal) (ou [`qrcode`](https://www.npmjs.com/package/qrcode) para imagem/canvas).
+
+    ```typescript
+    import makeWASocket from '@whiskeysockets/baileys'
+    import qrcode from 'qrcode-terminal'
+
+    const sock = makeWASocket({})
+
+    sock.ev.on('connection.update', ({ connection, qr }) => {
+      if (qr) {
+        qrcode.generate(qr, { small: true })
+      }
+
+      if (connection === 'open') {
+        console.log('Connected to WhatsApp')
+      }
+    })
+    ```
+
+    Em produção, envie a string `qr` para o seu frontend e renderize lá em vez do terminal.
+  </Step>
+
+  <Step title="Escaneie o QR code">
+    No seu celular, abra o WhatsApp e vá em **Configurações → Aparelhos conectados → Conectar um aparelho**. Aponte a câmera para o QR renderizado.
+
+    Após escanear, o WhatsApp **força a desconexão** do socket para que o Baileys reconecte com credenciais completas. Trate-o reconectando em `DisconnectReason.restartRequired` (veja [Mantendo a conexão ativa](#mantendo-a-conexão-ativa)).
+  </Step>
+</Steps>
+
+## Personalizar a identidade do navegador e receber o histórico completo
+
+A identidade de navegador que o Baileys apresenta ao WhatsApp afeta como seu cliente aparece em **Aparelhos conectados** e quanto histórico de mensagens é entregue na primeira sincronização. Ambas são configuradas pelo socket — veja [Configurar a conexão do Baileys](/pt-BR/concepts/socket-config) para os presets `Browsers` e a flag `syncFullHistory`.
+
+## Mantendo a conexão ativa
+
+O Baileys mantém uma conexão WebSocket persistente. Se o seu processo encerrar, a sessão é perdida. Trate o evento `connection.update` para detectar desconexões e reconectar quando apropriado.
+
+```typescript
+import makeWASocket, { DisconnectReason } from '@whiskeysockets/baileys'
+import { Boom } from '@hapi/boom'
+import qrcode from 'qrcode-terminal'
+
+function connect() {
+  const sock = makeWASocket({})
+
+  sock.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+    if (qr) {
+      qrcode.generate(qr, { small: true })
+    }
+
+    if (connection === 'close') {
+      const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode
+      const shouldReconnect = statusCode !== DisconnectReason.loggedOut
+
+      if (shouldReconnect) {
+        connect()
+      } else {
+        console.log('Logged out. Re-scan the QR code to reconnect.')
+      }
+    }
+  })
+}
+
+connect()
+```
+
+<Tip>
+  Combine a autenticação por QR code com `useMultiFileAuthState` para que você só precise escanear uma vez. Veja [Salvar e restaurar sessões do WhatsApp](/pt-BR/authentication/session-management).
+</Tip>

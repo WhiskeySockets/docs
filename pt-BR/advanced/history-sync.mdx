@@ -1,0 +1,48 @@
+---
+title: "Sincronizar histórico de conversa"
+description: "Receba chats, contatos e mensagens anteriores via messaging-history.set e peça mais sob demanda com fetchMessageHistory."
+---
+
+Após conectar, o socket baixa e processa seus chats, contatos e mensagens existentes via `messaging-history.set`.
+
+## Tratando o payload
+
+```ts
+sock.ev.on('messaging-history.set', ({
+  chats: newChats,
+  contacts: newContacts,
+  messages: newMessages,
+  syncType,
+}) => {
+  // Persista no seu store
+})
+```
+
+## Pedir histórico completo
+
+```ts
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  browser: Browsers.macOS('Desktop'),
+  syncFullHistory: true,
+})
+```
+
+<Note>
+  Sincronização completa aumenta tempo de inicialização e memória em contas grandes.
+</Note>
+
+## Desabilitar sincronização
+
+```ts
+const sock = makeWASocket({
+  shouldSyncHistoryMessage: () => false,
+})
+```
+
+## Sincronização sob demanda
+
+```ts
+await sock.fetchMessageHistory(/* count, oldestMsgKey, oldestMsgTimestamp */)
+```

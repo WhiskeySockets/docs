@@ -1,0 +1,115 @@
+---
+title: "Conectar com código de pareamento"
+description: "Vincule o Baileys ao WhatsApp Web sem QR code usando um código de pareamento de 8 dígitos digitado no celular."
+---
+
+A autenticação por código de pareamento permite vincular o Baileys ao WhatsApp usando um código de 8 dígitos em vez de um QR code. Útil em ambientes headless ou quando você quer vincular um aparelho digitando um código no celular.
+
+<Warning>
+  O código de pareamento é um método para conectar ao WhatsApp Web sem escanear um QR code. **Não** é a Mobile API. Você só pode vincular um aparelho por número de telefone com este método. Veja a [FAQ do WhatsApp](https://faq.whatsapp.com/378279804439436).
+</Warning>
+
+## Configuração
+
+<Steps>
+  <Step title="Crie o socket">
+    Crie o socket sem renderizar QR code. Você pode simplesmente ignorar o campo `qr` em `connection.update` ao usar códigos de pareamento.
+
+    ```typescript
+    import makeWASocket from '@whiskeysockets/baileys'
+
+    const sock = makeWASocket({})
+    ```
+
+    <Note>
+      A opção legada `printQRInTerminal` está **obsoleta** e não deve ser definida.
+    </Note>
+  </Step>
+
+  <Step title="Solicite um código de pareamento">
+    Verifique `sock.authState.creds.registered` antes de pedir um código. Se o socket já estiver registrado, não precisa solicitar um novo.
+
+    ```typescript
+    if (!sock.authState.creds.registered) {
+      const number = '15551234567'
+      const code = await sock.requestPairingCode(number)
+      console.log(`Pairing code: ${code}`)
+    }
+    ```
+
+    O `code` retornado é uma string de 8 dígitos que você digita no celular.
+  </Step>
+
+  <Step title="Digite o código no celular">
+    No celular, abra o WhatsApp e vá em **Configurações → Aparelhos conectados → Conectar um aparelho**. Selecione **Conectar com número de telefone** e digite o código de 8 dígitos.
+
+    Após confirmar, o evento `connection.update` dispara com `connection: 'open'`.
+  </Step>
+</Steps>
+
+## Formato do número de telefone
+
+O número que você passa para `requestPairingCode` deve seguir estas regras:
+
+- Inclua o código do país (ex.: `1` para EUA, `55` para Brasil)
+- Apenas dígitos — sem `+`, `(`, `)` ou `-`
+- Sem espaços
+
+<CodeGroup>
+
+```typescript Correto
+const code = await sock.requestPairingCode('15551234567')
+const code = await sock.requestPairingCode('5511999999999')
+```
+
+```typescript Incorreto
+const code = await sock.requestPairingCode('+1 (555) 123-4567')
+const code = await sock.requestPairingCode('555-123-4567')
+```
+
+</CodeGroup>
+
+## Exemplo completo
+
+O exemplo a seguir usa `readline` para pedir o número em tempo de execução:
+
+```typescript
+import makeWASocket, { useMultiFileAuthState } from '@whiskeysockets/baileys'
+import readline from 'readline'
+
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+const question = (text: string) => new Promise<string>((resolve) => rl.question(text, resolve))
+
+async function connect() {
+  const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+
+  const sock = makeWASocket({
+    auth: state,
+  })
+
+  sock.ev.on('connection.update', async ({ connection, qr }) => {
+    if (qr && !sock.authState.creds.registered) {
+      const number = await question('Enter your phone number (digits only, with country code):\n')
+      const code = await sock.requestPairingCode(number)
+      console.log(`Pairing code: ${code}`)
+    }
+
+    if (connection === 'open') {
+      console.log('Connected to WhatsApp')
+      rl.close()
+    }
+  })
+
+  sock.ev.on('creds.update', saveCreds)
+}
+
+connect()
+```
+
+<Note>
+  O campo `qr` em `connection.update` dispara mesmo no modo de pareamento. Use-o como gatilho para chamar `requestPairingCode`.
+</Note>
+
+<Tip>
+  Combine com `useMultiFileAuthState` para que o código de pareamento só seja necessário uma vez. Veja [Salvar e restaurar sessões do WhatsApp](/pt-BR/authentication/session-management).
+</Tip>
