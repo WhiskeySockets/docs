@@ -1,0 +1,146 @@
+---
+title: "Envie e receba mídia no WhatsApp"
+description: "Envie imagens, vídeos, áudio, documentos e GIFs com o Baileys."
+---
+
+O Baileys aceita mídia em três formas via `WAMediaUpload`: `Buffer`, `{ url: '...' }`, ou `{ stream: Stream }`.
+
+```typescript
+Buffer
+{ url: URL | string }
+{ stream: Readable }
+```
+
+<Tip>
+  Prefira `{ url }` ou `{ stream }` ao invés de `Buffer` cru — o Baileys faz streaming direto e reduz uso de RAM.
+</Tip>
+
+## Enviando mídia
+
+### Imagem
+
+```typescript
+await sock.sendMessage(
+    id,
+    {
+        image: {
+            url: './Media/ma_img.png'
+        },
+        caption: 'hello word'
+    }
+)
+```
+
+### Vídeo
+
+```typescript
+await sock.sendMessage(
+    id,
+    {
+        video: {
+            url: './Media/ma_gif.mp4'
+        },
+        caption: 'hello word',
+        ptv: false
+    }
+)
+```
+
+### GIF
+
+O WhatsApp não suporta `.gif`. Envie como `.mp4` com `gifPlayback: true`.
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        video: fs.readFileSync('Media/ma_gif.mp4'),
+        caption: 'hello word',
+        gifPlayback: true
+    }
+)
+```
+
+### Áudio
+
+Converta com `ffmpeg` antes de enviar:
+
+```bash
+ffmpeg -i input.mp4 -avoid_negative_ts make_zero -ac 1 output.ogg
+```
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        audio: {
+            url: './Media/audio.mp3'
+        },
+        mimetype: 'audio/mp4'
+    }
+)
+```
+
+<Note>
+  Flags `ffmpeg`: `codec: libopus`, `ac: 1`, `avoid_negative_ts make_zero`.
+</Note>
+
+### Visualizar uma vez
+
+```typescript
+await sock.sendMessage(
+    id,
+    {
+        image: {
+            url: './Media/ma_img.png'
+        },
+        viewOnce: true,
+        caption: 'hello word'
+    }
+)
+```
+
+## Geração de miniaturas
+
+| Tipo de mídia | Dependência | Comando |
+| --- | --- | --- |
+| Imagens, figurinhas | `jimp` ou `sharp` | `yarn add jimp` / `yarn add sharp` |
+| Vídeos | `ffmpeg` (sistema) | Gerenciador de pacotes do SO |
+
+## Baixando mídia recebida
+
+```typescript
+import { createWriteStream } from 'fs'
+import { downloadMediaMessage, getContentType } from '@whiskeysockets/baileys'
+
+sock.ev.on('messages.upsert', async ({ messages }) => {
+    for (const m of messages) {
+        if (!m.message) continue
+        const messageType = getContentType(m.message)
+
+        if (messageType === 'imageMessage') {
+            const stream = await downloadMediaMessage(
+                m,
+                'stream',
+                { },
+                {
+                    logger,
+                    reuploadRequest: sock.updateMediaMessage
+                }
+            )
+            const writeStream = createWriteStream('./my-download.jpeg')
+            stream.pipe(writeStream)
+        }
+    }
+})
+```
+
+## Re-upload de mídia antiga
+
+```typescript
+await sock.updateMediaMessage(msg)
+```
+
+<Note>
+  `reuploadRequest: sock.updateMediaMessage` em `downloadMediaMessage` cuida disso automaticamente em 404 ou 410.
+</Note>

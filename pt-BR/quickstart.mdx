@@ -1,0 +1,185 @@
+---
+title: "Comece com o Baileys"
+description: "Construa seu primeiro bot de WhatsApp com o Baileys em minutos. Aprenda a conectar, processar eventos, salvar sessões e enviar sua primeira mensagem."
+---
+
+Este guia mostra como criar uma aplicação Baileys mínima que conecta ao WhatsApp, persiste sua sessão, escuta mensagens recebidas e responde a elas. Ao final, você terá um bot funcional que pode estender com sua própria lógica.
+
+<Note>
+  O Baileys é uma biblioteca não oficial e não é afiliada ao WhatsApp. Use-o com responsabilidade e em conformidade com os Termos de Serviço do WhatsApp. Os mantenedores não compactuam com mensagens em massa, spam ou stalkerware.
+</Note>
+
+## Exemplo completo
+
+Os passos abaixo levam a este script funcional completo. Use-o como ponto de partida para o seu projeto.
+
+```typescript
+import makeWASocket, { DisconnectReason, useMultiFileAuthState } from '@whiskeysockets/baileys'
+import { Boom } from '@hapi/boom'
+import qrcode from 'qrcode-terminal'
+
+async function connectToWhatsApp() {
+    const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+
+    const sock = makeWASocket({
+        auth: state
+    })
+
+    sock.ev.on('connection.update', (update) => {
+        const { connection, lastDisconnect, qr } = update
+        if (qr) {
+            qrcode.generate(qr, { small: true })
+        }
+        if (connection === 'close') {
+            const shouldReconnect =
+                (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
+            console.log('connection closed due to', lastDisconnect?.error, ', reconnecting:', shouldReconnect)
+            if (shouldReconnect) {
+                connectToWhatsApp()
+            }
+        } else if (connection === 'open') {
+            console.log('opened connection')
+        }
+    })
+
+    sock.ev.on('messages.upsert', async (event) => {
+        for (const m of event.messages) {
+            console.log(JSON.stringify(m, undefined, 2))
+
+            console.log('replying to', m.key.remoteJid)
+            await sock.sendMessage(m.key.remoteJid!, { text: 'Hello from Baileys!' })
+        }
+    })
+
+    sock.ev.on('creds.update', saveCreds)
+}
+
+connectToWhatsApp()
+```
+
+## Passo a passo
+
+<Steps>
+  <Step title="Instale o Baileys">
+    Adicione o Baileys e seu peer `@hapi/boom` ao projeto. `@hapi/boom` é uma dependência direta do Baileys, usada para inspecionar códigos de erro de desconexão.
+
+    <CodeGroup>
+
+    ```bash npm
+    npm install @whiskeysockets/baileys @hapi/boom
+    ```
+
+    ```bash yarn
+    yarn add @whiskeysockets/baileys @hapi/boom
+    ```
+
+    </CodeGroup>
+
+    Garanta que você está rodando **Node.js 20.0.0 ou superior**. Caso contrário, a instalação falhará.
+  </Step>
+
+  <Step title="Configure o estado de autenticação">
+    O Baileys precisa de um objeto de estado de autenticação para gerenciar credenciais de sessão e chaves do Signal Protocol. O utilitário interno `useMultiFileAuthState` salva tudo em uma pasta local.
+
+    ```typescript
+    import makeWASocket, { useMultiFileAuthState } from '@whiskeysockets/baileys'
+
+    const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+    ```
+
+    `state` contém as credenciais e chaves atuais. `saveCreds` é um callback que você passa ao evento `creds.update`, para que a sessão seja gravada em disco sempre que mudar.
+
+    <Tip>
+      O nome da pasta (`auth_info_baileys` neste exemplo) pode ser qualquer caminho que você quiser. Guarde-o fora do código-fonte e adicione ao `.gitignore` — ele contém chaves criptográficas de longa duração da sua conta do WhatsApp.
+    </Tip>
+  </Step>
+
+  <Step title="Crie o socket">
+    Crie um socket chamando `makeWASocket` com seu estado de autenticação. Escute o campo `qr` em `connection.update` e renderize você mesmo — `printQRInTerminal` está obsoleto.
+
+    ```typescript
+    import qrcode from 'qrcode-terminal'
+
+    const sock = makeWASocket({
+        auth: state
+    })
+
+    sock.ev.on('connection.update', ({ qr }) => {
+        if (qr) qrcode.generate(qr, { small: true })
+    })
+    ```
+
+    <Note>
+      Quando você executar pela primeira vez, um QR code aparece no terminal. Abra o WhatsApp no celular, vá em **Configurações → Aparelhos conectados → Conectar um aparelho** e escaneie o código. Em execuções subsequentes, as credenciais salvas são reutilizadas e nenhum QR code é mostrado.
+    </Note>
+  </Step>
+
+  <Step title="Trate atualizações de conexão">
+    Escute `connection.update` para reagir quando a conexão abrir, fechar ou encontrar erros. A lógica de reconexão abaixo reinicia o socket automaticamente — exceto quando você foi explicitamente deslogado.
+
+    ```typescript
+    import { DisconnectReason } from '@whiskeysockets/baileys'
+    import { Boom } from '@hapi/boom'
+
+    sock.ev.on('connection.update', (update) => {
+        const { connection, lastDisconnect } = update
+        if (connection === 'close') {
+            const shouldReconnect =
+                (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
+            console.log('connection closed due to', lastDisconnect?.error, ', reconnecting:', shouldReconnect)
+            if (shouldReconnect) {
+                connectToWhatsApp()
+            }
+        } else if (connection === 'open') {
+            console.log('opened connection')
+        }
+    })
+    ```
+
+    `DisconnectReason.loggedOut` significa que sua sessão foi revogada. Nesse caso, apague a pasta de autenticação e escaneie um novo QR code.
+  </Step>
+
+  <Step title="Escute mensagens recebidas">
+    O evento `messages.upsert` dispara sempre que novas mensagens chegam. Itere sobre `event.messages` para tratar cada uma.
+
+    ```typescript
+    sock.ev.on('messages.upsert', async (event) => {
+        for (const m of event.messages) {
+            console.log(JSON.stringify(m, undefined, 2))
+
+            console.log('replying to', m.key.remoteJid)
+            await sock.sendMessage(m.key.remoteJid!, { text: 'Hello from Baileys!' })
+        }
+    })
+    ```
+
+    `m.key.remoteJid` é o ID do WhatsApp (JID) da conversa de origem da mensagem. Passe-o como primeiro argumento de `sock.sendMessage` para responder.
+  </Step>
+
+  <Step title="Salve as credenciais quando atualizadas">
+    Registre o callback `saveCreds` no evento `creds.update`. O Baileys o chama sempre que suas credenciais de sessão mudam.
+
+    ```typescript
+    sock.ev.on('creds.update', saveCreds)
+    ```
+
+    Se pular este passo, sua sessão não será salva e você precisará escanear o QR novamente a cada reinicialização.
+  </Step>
+</Steps>
+
+## E agora?
+
+<CardGroup cols={2}>
+  <Card title="Autenticação" icon="key" href="/pt-BR/authentication/qr-code">
+    Use código de pareamento em vez de QR code, ou aprenda a gerenciar sessões em banco de dados.
+  </Card>
+  <Card title="Envio de mensagens" icon="message" href="/pt-BR/messaging/sending-messages">
+    Envie texto, imagens, vídeo, áudio, enquetes, reações e mais.
+  </Card>
+  <Card title="Eventos" icon="bell" href="/pt-BR/concepts/events">
+    Veja a lista completa de eventos que o Baileys emite.
+  </Card>
+  <Card title="Grupos" icon="users" href="/pt-BR/features/groups">
+    Crie e gerencie grupos, processe pedidos de entrada e configure mensagens efêmeras.
+  </Card>
+</CardGroup>

@@ -1,0 +1,301 @@
+---
+title: "Configurar a conexão do Baileys"
+description: "Explore todas as opções de SocketConfig do Baileys: auth, browser, logger, cache, retries, timeouts e mais."
+---
+
+Toda conexão Baileys começa chamando `makeWASocket` com um objeto `SocketConfig`. A maioria das opções tem valores padrão sensatos definidos em `DEFAULT_CONNECTION_CONFIG`.
+
+## Opções obrigatórias
+
+### `auth`
+
+O único campo verdadeiramente obrigatório. Você deve passar um objeto `AuthenticationState`.
+
+```typescript
+import makeWASocket, { useMultiFileAuthState, makeCacheableSignalKeyStore } from '@whiskeysockets/baileys'
+import P from 'pino'
+
+const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
+
+const sock = makeWASocket({
+  auth: {
+    creds: state.creds,
+    keys: makeCacheableSignalKeyStore(state.keys, logger),
+  },
+})
+
+sock.ev.on('creds.update', saveCreds)
+```
+
+<Warning>
+  Quando uma mensagem é enviada ou recebida, sessões do Signal são atualizadas e `authState.keys.set()` é chamado. Se você não persistir essas atualizações imediatamente, mensagens vão falhar ao decifrar.
+</Warning>
+
+---
+
+## Identidade e navegador
+
+### `browser`
+
+Controla como o Baileys se identifica para o WhatsApp. Use a constante `Browsers` em vez de escrever a tupla manualmente — é também o nome que aparece em **Aparelhos conectados**.
+
+```typescript
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  browser: Browsers.macOS('Chrome'),
+
+  // Outras opções:
+  // browser: Browsers.ubuntu('My App')
+  // browser: Browsers.windows('Firefox')
+  // browser: Browsers.appropriate('Safari')
+})
+```
+
+| Preset | Exemplo |
+| --- | --- |
+| `Browsers.ubuntu('My App')` | Ubuntu — My App |
+| `Browsers.macOS('Desktop')` | macOS — Desktop |
+| `Browsers.windows('My App')` | Windows — My App |
+
+O navegador escolhido também afeta quanto histórico o WhatsApp envia na primeira sincronização. Identidades desktop recebem significativamente mais histórico que mobile.
+
+### Receber histórico completo de mensagens
+
+Por padrão, o Baileys conecta com um perfil Chrome, o que limita quanto histórico o WhatsApp entrega. Para histórico completo, defina `syncFullHistory: true` e use `Browsers.macOS('Desktop')`.
+
+```typescript
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  browser: Browsers.macOS('Desktop'),
+  syncFullHistory: true,
+})
+```
+
+As mensagens de histórico chegam de forma assíncrona pelo evento `messaging-history.set`. Veja [Sincronizar histórico de conversa](/pt-BR/advanced/history-sync).
+
+<Note>
+  Pedir histórico completo aumenta significativamente o tempo de inicialização e o uso de memória.
+</Note>
+
+### `logger`
+
+Aceita qualquer logger compatível com pino. Passe `level: 'debug'` para ver cada frame binário.
+
+```typescript
+import P from 'pino'
+
+const logger = P({ level: 'silent' })
+const devLogger = P({ level: 'debug' })
+```
+
+---
+
+## Comportamento da conexão
+
+### `markOnlineOnConnect`
+
+**Padrão:** `true`. Quando `true`, o Baileys se marca como online ao conectar. Defina `false` se quiser que o celular continue recebendo notificações.
+
+### `syncFullHistory`
+
+**Padrão:** `true`. Pede ao celular para entregar o histórico completo. Se você só precisa de mensagens recentes, defina `false`.
+
+### `printQRInTerminal`
+
+<Warning>
+  Esta opção está obsoleta. Use o evento `connection.update` para ler o campo `qr` e renderize você mesmo.
+</Warning>
+
+---
+
+## Confiabilidade de mensagens
+
+### `getMessage`
+
+Callback que recebe um `WAMessageKey` e retorna a `proto.IMessage`. Necessário para reentregas e decifrar votos de enquete.
+
+```typescript
+const messageStore = new Map<string, proto.IMessage>()
+
+const sock = makeWASocket({
+  auth: state,
+  getMessage: async (key) => {
+    const id = `${key.remoteJid}:${key.id}`
+    return messageStore.get(id)
+  },
+})
+
+sock.ev.on('messages.upsert', ({ messages }) => {
+  for (const msg of messages) {
+    if (msg.key.id && msg.message) {
+      const id = `${msg.key.remoteJid}:${msg.key.id}`
+      messageStore.set(id, msg.message)
+    }
+  }
+})
+```
+
+### `msgRetryCounterCache`
+
+Cache que conta quantas vezes o Baileys tentou reenviar.
+
+```typescript
+import NodeCache from '@cacheable/node-cache'
+import { CacheStore } from '@whiskeysockets/baileys'
+
+const msgRetryCounterCache = new NodeCache() as CacheStore
+
+const sock = makeWASocket({
+  auth: state,
+  msgRetryCounterCache,
+})
+```
+
+### `maxMsgRetryCount`
+
+**Padrão:** `5`.
+
+---
+
+## Performance em grupos
+
+### `cachedGroupMetadata`
+
+```typescript
+import NodeCache from '@cacheable/node-cache'
+
+const groupCache = new NodeCache({ stdTTL: 5 * 60, useClones: false })
+
+const sock = makeWASocket({
+  auth: state,
+  cachedGroupMetadata: async (jid) => groupCache.get(jid),
+})
+
+sock.ev.on('groups.update', async ([event]) => {
+  const metadata = await sock.groupMetadata(event.id)
+  groupCache.set(event.id, metadata)
+})
+
+sock.ev.on('group-participants.update', async (event) => {
+  const metadata = await sock.groupMetadata(event.id)
+  groupCache.set(event.id, metadata)
+})
+```
+
+---
+
+## Filtragem de eventos
+
+### `shouldIgnoreJid`
+
+```typescript
+import { isJidBroadcast, isJidNewsletter } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  shouldIgnoreJid: (jid) => isJidBroadcast(jid) || isJidNewsletter(jid),
+})
+```
+
+---
+
+## Timeouts e keep-alive
+
+| Opção | Padrão | Descrição |
+| --- | --- | --- |
+| `connectTimeoutMs` | `20_000` | Falha a conexão se o WebSocket não abrir dentro deste período. |
+| `defaultQueryTimeoutMs` | `60_000` | Tempo máximo para esperar uma resposta de query IQ. |
+| `keepAliveIntervalMs` | `30_000` | Intervalo entre frames ping do WebSocket. |
+| `retryRequestDelayMs` | `250` | Delay entre requisições sucessivas de reentrega. |
+
+---
+
+## Pré-visualização de links
+
+### `generateHighQualityLinkPreview`
+
+**Padrão:** `false`. Quando `true`, o Baileys faz upload da miniatura para os servidores de mídia. Requer `link-preview-js`.
+
+```typescript
+const sock = makeWASocket({
+  auth: state,
+  generateHighQualityLinkPreview: true,
+})
+```
+
+---
+
+## Exemplo pronto para produção
+
+```typescript
+import makeWASocket, {
+  Browsers,
+  CacheStore,
+  makeCacheableSignalKeyStore,
+  useMultiFileAuthState,
+  isJidBroadcast,
+  fetchLatestBaileysVersion,
+  proto,
+} from '@whiskeysockets/baileys'
+import NodeCache from '@cacheable/node-cache'
+import P from 'pino'
+
+const logger = P({ level: 'silent' })
+
+const msgRetryCounterCache = new NodeCache() as CacheStore
+const groupCache = new NodeCache({ stdTTL: 5 * 60, useClones: false })
+const messageStore = new Map<string, proto.IMessage>()
+
+async function startSock() {
+  const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
+  const { version } = await fetchLatestBaileysVersion()
+
+  const sock = makeWASocket({
+    version,
+    logger,
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
+    browser: Browsers.macOS('Chrome'),
+    markOnlineOnConnect: false,
+    syncFullHistory: false,
+    generateHighQualityLinkPreview: true,
+    msgRetryCounterCache,
+    maxMsgRetryCount: 5,
+    connectTimeoutMs: 20_000,
+    defaultQueryTimeoutMs: 60_000,
+    keepAliveIntervalMs: 30_000,
+    shouldIgnoreJid: (jid) => isJidBroadcast(jid),
+    getMessage: async (key) => {
+      const id = `${key.remoteJid}:${key.id}`
+      return messageStore.get(id)
+    },
+    cachedGroupMetadata: async (jid) => groupCache.get(jid),
+  })
+
+  sock.ev.on('creds.update', saveCreds)
+
+  sock.ev.on('messages.upsert', ({ messages }) => {
+    for (const msg of messages) {
+      if (msg.key.id && msg.message) {
+        messageStore.set(`${msg.key.remoteJid}:${msg.key.id}`, msg.message)
+      }
+    }
+  })
+
+  sock.ev.on('groups.update', async ([event]) => {
+    groupCache.set(event.id, await sock.groupMetadata(event.id))
+  })
+
+  sock.ev.on('group-participants.update', async (event) => {
+    groupCache.set(event.id, await sock.groupMetadata(event.id))
+  })
+
+  return sock
+}
+```

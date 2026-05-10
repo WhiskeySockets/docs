@@ -1,0 +1,90 @@
+---
+title: "Inscrever-se e transmitir presença no WhatsApp"
+description: "Acompanhe quando contatos estão online, digitando ou gravando usando assinaturas de presença do Baileys."
+---
+
+## Estados de presença
+
+| Estado | Significado |
+| --- | --- |
+| `available` | Online e ativo |
+| `unavailable` | Offline ou app em segundo plano |
+| `composing` | Digitando |
+| `recording` | Gravando áudio |
+| `paused` | Começou a digitar mas parou |
+
+## Inscrever-se em atualizações
+
+```typescript
+sock.ev.on('presence.update', console.log)
+
+await sock.presenceSubscribe(jid)
+```
+
+## Padrão completo
+
+```typescript
+import makeWASocket from '@whiskeysockets/baileys'
+
+await sock.presenceSubscribe(jid)
+
+sock.ev.on('presence.update', ({ id, presences }) => {
+    for (const [participant, data] of Object.entries(presences)) {
+        console.log(
+            `${participant} in ${id}:`,
+            data.lastKnownPresence,
+            'last seen:', data.lastSeen
+        )
+    }
+})
+```
+
+Formato do payload:
+
+```typescript
+{
+    id: string,
+    presences: {
+        [participantJid: string]: {
+            lastKnownPresence: WAPresence,
+            lastSeen?: number
+        }
+    }
+}
+```
+
+<Note>
+  Em grupos, `presences` mapeia JIDs de participantes. Em conversas 1-a-1, contém uma única entrada.
+</Note>
+
+## Transmitir sua própria presença
+
+```typescript
+await sock.sendPresenceUpdate('available', jid)
+```
+
+| Valor | Quando usar |
+| --- | --- |
+| `available` | Cliente ativo, usuário presente |
+| `unavailable` | Cliente ocioso ou usuário saiu |
+| `composing` | Usuário está digitando |
+| `recording` | Usuário está gravando áudio |
+| `paused` | Usuário parou de digitar sem enviar |
+
+<Warning>
+  Atualizações expiram em ~10 segundos. Para sustentar `composing`, chame repetidamente.
+</Warning>
+
+## Notificações no celular
+
+```typescript
+const sock = makeWASocket({
+    markOnlineOnConnect: false
+})
+```
+
+Ou:
+
+```typescript
+await sock.sendPresenceUpdate('unavailable')
+```

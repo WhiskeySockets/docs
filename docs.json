@@ -24,77 +24,162 @@
     }
   },
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Documentation",
-        "groups": [
+        "language": "en",
+        "default": true,
+        "tabs": [
           {
-            "group": "Get Started",
-            "pages": [
-              "introduction",
-              "installation",
-              "quickstart",
-              "faq"
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "introduction",
+                  "installation",
+                  "quickstart",
+                  "faq"
+                ]
+              },
+              {
+                "group": "Authentication",
+                "pages": [
+                  "authentication/qr-code",
+                  "authentication/pairing-code",
+                  "authentication/session-management"
+                ]
+              },
+              {
+                "group": "Core Concepts",
+                "pages": [
+                  "concepts/socket-config",
+                  "concepts/events",
+                  "concepts/jids",
+                  "concepts/data-store"
+                ]
+              },
+              {
+                "group": "Messaging",
+                "pages": [
+                  "messaging/sending-messages",
+                  "messaging/media-messages",
+                  "messaging/message-actions",
+                  "messaging/chat-management"
+                ]
+              },
+              {
+                "group": "Features",
+                "pages": [
+                  "features/groups",
+                  "features/privacy",
+                  "features/presence",
+                  "features/broadcasts-stories"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  "advanced/history-sync",
+                  "advanced/usync",
+                  "advanced/calls",
+                  "advanced/custom-functionality",
+                  "advanced/troubleshooting"
+                ]
+              },
+              {
+                "group": "Migration",
+                "pages": [
+                  "migration/v7",
+                  "migration/v8"
+                ]
+              },
+              {
+                "group": "Community",
+                "pages": [
+                  "community/contributing",
+                  "community/translations",
+                  "community/sponsor"
+                ]
+              }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "language": "pt-BR",
+        "tabs": [
           {
-            "group": "Authentication",
-            "pages": [
-              "authentication/qr-code",
-              "authentication/pairing-code",
-              "authentication/session-management"
-            ]
-          },
-          {
-            "group": "Core Concepts",
-            "pages": [
-              "concepts/socket-config",
-              "concepts/events",
-              "concepts/jids",
-              "concepts/data-store"
-            ]
-          },
-          {
-            "group": "Messaging",
-            "pages": [
-              "messaging/sending-messages",
-              "messaging/media-messages",
-              "messaging/message-actions",
-              "messaging/chat-management"
-            ]
-          },
-          {
-            "group": "Features",
-            "pages": [
-              "features/groups",
-              "features/privacy",
-              "features/presence",
-              "features/broadcasts-stories"
-            ]
-          },
-          {
-            "group": "Advanced",
-            "pages": [
-              "advanced/history-sync",
-              "advanced/usync",
-              "advanced/calls",
-              "advanced/custom-functionality",
-              "advanced/troubleshooting"
-            ]
-          },
-          {
-            "group": "Migration",
-            "pages": [
-              "migration/v7",
-              "migration/v8"
-            ]
-          },
-          {
-            "group": "Community",
-            "pages": [
-              "community/contributing",
-              "community/translations",
-              "community/sponsor"
+            "tab": "Documentação",
+            "groups": [
+              {
+                "group": "Comece aqui",
+                "pages": [
+                  "pt-BR/introduction",
+                  "pt-BR/installation",
+                  "pt-BR/quickstart",
+                  "pt-BR/faq"
+                ]
+              },
+              {
+                "group": "Autenticação",
+                "pages": [
+                  "pt-BR/authentication/qr-code",
+                  "pt-BR/authentication/pairing-code",
+                  "pt-BR/authentication/session-management"
+                ]
+              },
+              {
+                "group": "Conceitos principais",
+                "pages": [
+                  "pt-BR/concepts/socket-config",
+                  "pt-BR/concepts/events",
+                  "pt-BR/concepts/jids",
+                  "pt-BR/concepts/data-store"
+                ]
+              },
+              {
+                "group": "Mensagens",
+                "pages": [
+                  "pt-BR/messaging/sending-messages",
+                  "pt-BR/messaging/media-messages",
+                  "pt-BR/messaging/message-actions",
+                  "pt-BR/messaging/chat-management"
+                ]
+              },
+              {
+                "group": "Funcionalidades",
+                "pages": [
+                  "pt-BR/features/groups",
+                  "pt-BR/features/privacy",
+                  "pt-BR/features/presence",
+                  "pt-BR/features/broadcasts-stories"
+                ]
+              },
+              {
+                "group": "Avançado",
+                "pages": [
+                  "pt-BR/advanced/history-sync",
+                  "pt-BR/advanced/usync",
+                  "pt-BR/advanced/calls",
+                  "pt-BR/advanced/custom-functionality",
+                  "pt-BR/advanced/troubleshooting"
+                ]
+              },
+              {
+                "group": "Migração",
+                "pages": [
+                  "pt-BR/migration/v7",
+                  "pt-BR/migration/v8"
+                ]
+              },
+              {
+                "group": "Comunidade",
+                "pages": [
+                  "pt-BR/community/contributing",
+                  "pt-BR/community/translations",
+                  "pt-BR/community/sponsor"
+                ]
+              }
             ]
           }
         ]

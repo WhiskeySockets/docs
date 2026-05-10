@@ -1,0 +1,308 @@
+---
+title: "JIDs do WhatsApp explicados"
+description: "JIDs (Jabber IDs) são como o WhatsApp identifica usuários, grupos e listas de transmissão no Baileys. Aprenda os formatos, a dualidade PN/LID e os helpers."
+---
+
+O WhatsApp identifica todo participante — usuários, grupos, listas de transmissão e feeds de status — com um **JID** (Jabber ID). JIDs vêm do protocolo XMPP e seguem o formato `local@server`. Você os encontra o tempo todo no Baileys: como destino de `sock.sendMessage`, no `key.remoteJid` de cada mensagem recebida e como parâmetro de consultas a grupos e contatos.
+
+O WhatsApp moderno identifica a mesma pessoa de duas formas, dependendo do contexto. Ambas são JIDs:
+
+- **PNJID — Phone Number Jabber Identifier.** Vive em `@s.whatsapp.net` e é derivado do número de telefone do usuário. É o identificador legado e o que você usa para procurar alguém pelo número.
+- **LIDJID — Linked Identity Jabber Identifier.** Vive em `@lid` e é um identificador opaco por usuário que o WhatsApp atribui para anonimizar números em grupos, comunidades e outras superfícies compartilhadas. É o identificador padrão no Baileys 7.x e posteriores.
+
+As duas formas se referem à mesma conta. O WhatsApp permite resolver um PNJID para o seu LIDJID (mas não o contrário) — veja [Resolução PNJID ↔ LIDJID](#resolução-pnjid--lidjid).
+
+## Formatos de JID
+
+<CardGroup cols={2}>
+  <Card title="Usuário (PNJID)" icon="user">
+    `[ddi][numero]@s.whatsapp.net`
+
+    Exemplo: `5511999999999@s.whatsapp.net`
+  </Card>
+  <Card title="Usuário (LIDJID)" icon="user-shield">
+    `[lid]@lid`
+
+    Exemplo: `123456789012345@lid`
+  </Card>
+  <Card title="Grupo" icon="users">
+    `[timestamp]-[random]@g.us`
+
+    Exemplo: `123456789-123345@g.us`
+  </Card>
+  <Card title="Lista de transmissão" icon="megaphone">
+    `[timestamp]@broadcast`
+
+    Exemplo: `1234567890@broadcast`
+  </Card>
+  <Card title="Stories / Status" icon="circle-play">
+    `status@broadcast`
+
+    Constante fixa — todas as atualizações de status vão para este JID.
+  </Card>
+  <Card title="Newsletter" icon="newspaper">
+    `[id]@newsletter`
+
+    Exemplo: `12345@newsletter`
+  </Card>
+</CardGroup>
+
+Domínios menos comuns que você pode encontrar:
+
+| Servidor | Significado |
+| --- | --- |
+| `@hosted` | PN hospedado — usuário PN roteado pelo Meta hosting |
+| `@hosted.lid` | LID hospedado — usuário LID roteado pelo Meta hosting |
+| `@bot` | Conta de bot Meta AI / first-party |
+| `@c.us` | Domínio legado do WhatsApp (ainda usado para `0@c.us`, JID oficial business e PSAs) |
+| `@call` | Sinalização de chamadas de voz/vídeo |
+
+### Regras do número de telefone
+
+Ao construir um PNJID a partir de um número:
+
+- Inclua o código do país (ex.: `1` para EUA, `55` para Brasil).
+- Não inclua `+`, `-`, espaços ou parênteses.
+- `5511999999999@s.whatsapp.net` está correto; `+55 (11) 99999-9999@s.whatsapp.net` não está.
+
+```typescript
+// Correto: ddi + dígitos, sem símbolos
+const jid = '5511999999999@s.whatsapp.net'
+
+// Verifique se o número existe no WhatsApp antes de mandar mensagem
+const [result] = await sock.onWhatsApp(jid)
+if (result?.exists) {
+  await sock.sendMessage(result.jid, { text: 'Olá!' })
+}
+```
+
+<Tip>
+  Sempre use o JID retornado por `sock.onWhatsApp` em vez do que você construiu. O WhatsApp pode normalizar o número para um JID canônico.
+</Tip>
+
+---
+
+## PN ↔ LID: o modelo de identidade dupla
+
+Desde 2024, o WhatsApp vem migrando de identificadores de número de telefone para LIDs (Linked Identity JIDs). Um LID é opaco e por usuário — esconde o número de telefone subjacente para que sua conta apareça em grupos grandes, comunidades e canais sem vazar o número.
+
+No Baileys 7.x e posteriores:
+
+- Novas sessões Signal são criadas em formato LID por padrão.
+- Um único usuário tem tanto um PNJID (`...@s.whatsapp.net`) quanto um LIDJID (`...@lid`). Eles se referem à mesma pessoa.
+- Os campos `participant` em grupos costumam ser LIDs; `participantAlt` carrega o PN correspondente, e vice-versa.
+- `MessageKey.remoteJidAlt` e `MessageKey.participantAlt` dão a você o identificador alternativo para mensagens diretas e mensagens de grupo/transmissão/canal respectivamente.
+- O tipo `Contact` agora expõe um único `id` mais campos `phoneNumber` (quando `id` é LID) e `lid` (quando `id` é PN).
+
+<Info>
+  Não tente "restaurar" PN JIDs no seu app. Migre seu armazenamento, indexação e roteamento para LIDs — o WhatsApp trata LIDs como o identificador canônico daqui pra frente.
+</Info>
+
+### Resolução PNJID ↔ LIDJID
+
+O WhatsApp permite resolver um número para o seu LID. O caminho inverso — de LID para número — não é geralmente suportado. Use `onWhatsApp` para verificações pontuais de existência por PN, e o store `lidMapping` em `sock.signalRepository` para conversões diretas:
+
+```typescript
+// PN → LID (único)
+const lid = await sock.signalRepository.lidMapping.getLIDForPN(
+  '5511999999999@s.whatsapp.net'
+)
+
+// PN → LID (em lote — preferido para volumes)
+const mappings = await sock.signalRepository.lidMapping.getLIDsForPNs([
+  '5511999999999@s.whatsapp.net',
+  '447911123456@s.whatsapp.net',
+])
+// [{ pn: '5511999999999@s.whatsapp.net', lid: '...@lid' }, ...]
+
+// LID → PN (apenas se o Baileys já tiver visto o mapeamento antes)
+const pn = await sock.signalRepository.lidMapping.getPNForLID('123456789012345@lid')
+```
+
+Um evento `lid-mapping.update` dispara sempre que o Baileys aprende um novo par PN ↔ LID pela rede. Para consultas de diretório mais avançadas, veja [Protocolo USync](/pt-BR/advanced/usync).
+
+### Compartilhamento de número entre contas
+
+Como LIDs escondem números por padrão, o WhatsApp fornece flags explícitas de opt-in para trocá-los quando ambos os lados concordam:
+
+- Empresas podem solicitar o número do destinatário com `{ requestPhoneNumber: true }` em uma mensagem enviada.
+- Usuários podem compartilhar seu número com `{ sharePhoneNumber: true }`.
+
+Empresas usam LIDs desde 2023; usuários foram incluídos ao longo de 2024.
+
+---
+
+## JIDs multi-aparelho
+
+No protocolo multi-aparelho do WhatsApp, uma única conta pode ter múltiplos aparelhos conectados. Cada aparelho recebe um sufixo: `5511999999999:2@s.whatsapp.net` ou `123456789012345:3@lid`. A parte antes do `:` é o usuário, e o número depois é o ID do aparelho.
+
+É por isso que você nunca deve comparar ou dividir JIDs com operações de string — uma mensagem do aparelho `:0` e uma do `:2` pertencem ao mesmo usuário.
+
+---
+
+## Helpers de JID
+
+O Baileys exporta um conjunto de helpers em `@whiskeysockets/baileys`. Sempre use eles em vez de manipulação manual de string.
+
+### Parsing e codificação
+
+```typescript
+import { jidDecode, jidEncode, jidNormalizedUser } from '@whiskeysockets/baileys'
+
+// Decodifica um JID em seus componentes
+const decoded = jidDecode('5511999999999:2@s.whatsapp.net')
+// { user: '5511999999999', server: 's.whatsapp.net', device: 2, domainType: 0 }
+
+// Decodifica um LIDJID
+const lidDecoded = jidDecode('123456789012345:3@lid')
+// { user: '123456789012345', server: 'lid', device: 3, domainType: 1 }
+
+// Normaliza um JID — remove sufixo de aparelho/agente
+const normalized = jidNormalizedUser('5511999999999:2@s.whatsapp.net')
+// '5511999999999@s.whatsapp.net'
+
+// Codifica componentes de volta em uma string JID
+const encoded = jidEncode('5511999999999', 's.whatsapp.net')
+// '5511999999999@s.whatsapp.net'
+```
+
+O campo `domainType` no resultado decodificado corresponde ao enum `WAJIDDomains`:
+
+| Valor | Constante | Domínio |
+| --- | --- | --- |
+| `0` | `WHATSAPP` | `s.whatsapp.net` |
+| `1` | `LID` | `lid` |
+| `128` | `HOSTED` | `hosted` |
+| `129` | `HOSTED_LID` | `hosted.lid` |
+
+### Verificações de tipo
+
+```typescript
+import {
+  isJidGroup,
+  isJidBroadcast,
+  isJidStatusBroadcast,
+  isJidNewsletter,
+  isPnUser,
+  isLidUser,
+  isHostedPnUser,
+  isHostedLidUser,
+  isJidMetaAI,
+  areJidsSameUser,
+} from '@whiskeysockets/baileys'
+
+isJidGroup('123456789-123345@g.us')          // true
+isJidBroadcast('1234567890@broadcast')        // true
+isJidStatusBroadcast('status@broadcast')      // true
+isJidNewsletter('12345@newsletter')           // true
+isPnUser('5511999999999@s.whatsapp.net')      // true   (PNJID)
+isLidUser('123456789012345@lid')              // true   (LIDJID)
+isHostedPnUser('5511999999999@hosted')        // true
+isHostedLidUser('123456789012345@hosted.lid') // true
+isJidMetaAI('13135550002@bot')                // true
+
+areJidsSameUser(
+  '5511999999999:0@s.whatsapp.net',
+  '5511999999999:3@s.whatsapp.net'
+)  // true
+```
+
+<Warning>
+  `areJidsSameUser` compara somente a parte do usuário — não cruza fronteiras PN/LID. Para verificar se um PNJID e um LIDJID se referem à mesma conta, resolva ambos para a mesma forma antes via `getLIDForPN`.
+</Warning>
+
+<Note>
+  `isJidUser` de versões anteriores foi removido. Use `isPnUser` ou `isLidUser` dependendo da forma desejada.
+</Note>
+
+### Constantes comuns
+
+```typescript
+import {
+  STORIES_JID,
+  S_WHATSAPP_NET,
+  OFFICIAL_BIZ_JID,
+  META_AI_JID,
+} from '@whiskeysockets/baileys'
+
+STORIES_JID      // 'status@broadcast'
+S_WHATSAPP_NET   // '@s.whatsapp.net'
+OFFICIAL_BIZ_JID // '16505361212@c.us'
+META_AI_JID      // '13135550002@c.us'
+```
+
+---
+
+## Padrões práticos
+
+### Roteamento de mensagens por tipo
+
+```typescript
+import { isJidGroup, isJidBroadcast } from '@whiskeysockets/baileys'
+
+sock.ev.on('messages.upsert', ({ messages, type }) => {
+  if (type !== 'notify') return
+  for (const msg of messages) {
+    const jid = msg.key.remoteJid!
+    if (isJidGroup(jid)) {
+      handleGroupMessage(msg)
+    } else if (isJidBroadcast(jid)) {
+      // ignora mensagens de transmissão
+    } else {
+      handleDirectMessage(msg)
+    }
+  }
+})
+```
+
+### Filtrando eventos com `shouldIgnoreJid`
+
+```typescript
+import { isJidBroadcast, isJidNewsletter } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  shouldIgnoreJid: (jid) => isJidBroadcast(jid) || isJidNewsletter(jid),
+})
+```
+
+### Verificar se dois JIDs são do mesmo usuário
+
+```typescript
+import { areJidsSameUser } from '@whiskeysockets/baileys'
+
+const isSameUser = areJidsSameUser(
+  msg.key.participant,
+  sock.user?.id
+)
+```
+
+### Deduplicar PN e LID do mesmo usuário
+
+```typescript
+import { isLidUser } from '@whiskeysockets/baileys'
+
+async function canonicalLid(jid: string): Promise<string> {
+  if (isLidUser(jid)) return jid
+  const lid = await sock.signalRepository.lidMapping.getLIDForPN(jid)
+  return lid ?? jid
+}
+```
+
+---
+
+## O que não fazer
+
+<Warning>
+  Nunca divida uma string JID com `.split('@')` ou compare JIDs com `===`. JIDs podem ter sufixos de aparelho (`:2`), campos de agente, domínios alternativos (`@lid`, `@hosted.lid`) ou dualidade PN/LID que fazem comparações de string falharem silenciosamente.
+
+  ```typescript
+  // Errado — perde variantes de aparelho e ignora dualidade PN/LID
+  const user = jid.split('@')[0]
+  const isSame = jid1 === jid2
+
+  // Certo — use os helpers fornecidos
+  const { user } = jidDecode(jid)!
+  const isSame = areJidsSameUser(jid1, jid2)
+  ```
+</Warning>

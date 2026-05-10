@@ -1,0 +1,49 @@
+---
+title: "Baileys: biblioteca de API do WhatsApp Web para Node.js"
+description: "Baileys conecta ao WhatsApp Web por WebSocket, sem navegador. Construa bots, automatize conversas e processe eventos em tempo real com TypeScript."
+---
+
+Baileys é uma biblioteca TypeScript baseada em WebSocket que permite interagir com a API do WhatsApp Web diretamente — sem navegador, sem Selenium, sem Chromium. Ela fala o mesmo protocolo binário Noise/protobuf do WhatsApp Web, então você pode autenticar, enviar e receber mensagens, gerenciar grupos e reagir a eventos em tempo real a partir de um processo Node.js leve.
+
+## O que você pode construir
+
+Com o Baileys, você pode criar bots de atendimento, sistemas de notificação, ferramentas de gerenciamento de grupos, automações de conversa e qualquer integração que precise enviar ou receber mensagens do WhatsApp programaticamente. A biblioteca expõe toda a superfície do protocolo do WhatsApp Web, então você não fica limitado a um conjunto fixo de ações.
+
+## Principais capacidades
+
+- **Envio e recebimento de mensagens** — texto, imagens, vídeo, áudio, documentos, figurinhas, enquetes, reações, localizações e contatos
+- **Manipulação de mídia** — upload e download em streaming sem carregar arquivos inteiros na memória; geração automática de miniaturas com dependências opcionais
+- **Grupos** — criar grupos, gerenciar participantes, atualizar metadados, processar pedidos de entrada e configurar mensagens efêmeras
+- **Controles de privacidade** — ler e atualizar visto por último, foto de perfil, status, recibos de leitura e privacidade de adição em grupos
+- **Presença** — assinar e transmitir indicadores de digitação e status online
+- **Eventos em tempo real** — interface de EventEmitter tipada cobrindo mensagens, estado de conexão, contatos, conversas e mudanças de grupo
+- **Persistência de sessão** — salvar e restaurar o estado de autenticação para que você só precise escanear o QR code uma vez
+- **TypeScript primeiro** — todos os tipos públicos são exportados; suporte completo de IntelliSense no VS Code e editores compatíveis
+
+## Requisitos
+
+- Node.js >=20.0.0 — verificado no momento da instalação pelo campo `engines` em `package.json`
+- TypeScript é suportado de fábrica; o pacote já vem com arquivos de declaração `.d.ts`
+
+## Aviso legal
+
+<Warning>
+  Baileys não é afiliado, endossado ou oficialmente conectado ao WhatsApp ou Meta. "WhatsApp" e marcas relacionadas são marcas registradas dos respectivos donos. O uso desta biblioteca é por sua conta e risco. Os mantenedores não compactuam com spam, mensagens em massa, stalkerware ou qualquer uso que viole os Termos de Serviço do WhatsApp.
+</Warning>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Instalação" icon="download" href="/pt-BR/installation">
+    Adicione o Baileys ao seu projeto Node.js com npm ou yarn, incluindo dependências opcionais.
+  </Card>
+  <Card title="Início rápido" icon="bolt" href="/pt-BR/quickstart">
+    Conecte ao WhatsApp, processe eventos e envie sua primeira mensagem em minutos.
+  </Card>
+  <Card title="Autenticação" icon="key" href="/pt-BR/authentication/qr-code">
+    Vincule sua conta do WhatsApp usando QR code ou código de pareamento.
+  </Card>
+  <Card title="Eventos" icon="bell" href="/pt-BR/concepts/events">
+    Aprenda como o Baileys expõe estado de conexão, mensagens e mudanças de grupo como eventos tipados.
+  </Card>
+</CardGroup>

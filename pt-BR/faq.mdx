@@ -1,0 +1,83 @@
+---
+title: "Perguntas frequentes"
+description: "Perguntas frequentes sobre o uso do Baileys, de peculiaridades de conexão e entrega de mensagens a LIDs e sincronização de histórico."
+---
+
+Esta página reúne respostas para as perguntas que aparecem com mais frequência em issues e na comunidade. Se a sua não está aqui, navegue pela documentação ou abra uma discussão no [GitHub](https://github.com/WhiskeySockets/Baileys/discussions).
+
+## O Baileys é afiliado ao WhatsApp?
+
+Não. O Baileys é uma biblioteca open source independente que se conecta ao protocolo WebSocket do WhatsApp Web pela funcionalidade de [Aparelhos Conectados](https://faq.whatsapp.com/378279804439436). Ele **não** usa a [WhatsApp Business API](https://developers.facebook.com/docs/whatsapp/overview/business-accounts/). Use por sua conta e risco — não faça spam e não construa stalkerware.
+
+## Por que meu socket desconecta logo depois que escaneio o QR?
+
+Isso é esperado. Após escanear o QR, o WhatsApp força uma reconexão para que o Baileys apresente as credenciais completas. Observe `DisconnectReason.restartRequired` em `connection.update` e reabra o socket. Veja [Conectar com QR code](/pt-BR/authentication/qr-code).
+
+## Por que o QR code não está aparecendo no meu terminal?
+
+A opção `printQRInTerminal` está **obsoleta**. Escute o campo `qr` em `connection.update` e renderize você mesmo com uma biblioteca como [`qrcode-terminal`](https://www.npmjs.com/package/qrcode-terminal) ou [`qrcode`](https://www.npmjs.com/package/qrcode).
+
+```ts
+import qrcode from 'qrcode-terminal'
+
+sock.ev.on('connection.update', ({ qr }) => {
+  if (qr) qrcode.generate(qr, { small: true })
+})
+```
+
+## Por que minhas mensagens ficam presas em "esta mensagem pode demorar"?
+
+O sistema de reentrega do WhatsApp exige que você devolva a mensagem original quando a entrega falhar. Implemente [`getMessage`](/pt-BR/concepts/socket-config) na configuração do seu socket para que o Baileys consiga recriptografar e reenviar.
+
+## Devo usar `useMultiFileAuthState` em produção?
+
+Não. É adequado para desenvolvimento e bots pequenos, mas faz I/O em disco que não escala. Use a [implementação](https://github.com/WhiskeySockets/Baileys/blob/master/src/Utils/use-multi-file-auth-state.ts) como referência e respalde sua autenticação real com um banco de dados. Veja [Salvar e restaurar sessões do WhatsApp](/pt-BR/authentication/session-management).
+
+## Como recebo o histórico completo da conversa?
+
+Defina `syncFullHistory: true` e use um preset de navegador desktop. Ambas as opções fazem parte da configuração do socket — veja [Receber histórico completo](/pt-BR/concepts/socket-config#receber-histórico-completo-de-mensagens).
+
+```ts
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  browser: Browsers.macOS('Desktop'),
+  syncFullHistory: true,
+})
+```
+
+O WhatsApp entrega o histórico de forma assíncrona pelo evento `messaging-history.set` após a conexão abrir. Históricos grandes aumentam consideravelmente o tempo de inicialização e o consumo de memória.
+
+## O que é um LID e por que vejo isso em vez de números de telefone?
+
+Um **LIDJID** (Linked Identity Jabber Identifier, em `@lid`) é um identificador anônimo por usuário que o WhatsApp atribui a cada conta. A forma legada de número de telefone é o **PNJID** (Phone Number Jabber Identifier, em `@s.whatsapp.net`). Por padrão, todas as novas sessões Signal são baseadas em LID a partir do Baileys 7.x. Você consegue resolver um PNJID para o seu LIDJID via `onWhatsApp()` ou `getLIDForPN`, mas o caminho inverso geralmente não funciona. Não tente "restaurar" PN JIDs no seu app — migre para LIDs. Veja [JIDs do WhatsApp explicados](/pt-BR/concepts/jids) e [Migrar para o Baileys v7](/pt-BR/migration/v7).
+
+## Por que estou sendo limitado ou banido ao enviar para grupos?
+
+Toda chamada `sendMessage` para um grupo busca a lista de participantes para criptografar para cada membro. Sem cache, isso atinge o rate limit rapidamente. Forneça um callback `cachedGroupMetadata` na configuração do socket:
+
+```ts
+const groupCache = new NodeCache(/* ... */)
+
+const sock = makeWASocket({
+  cachedGroupMetadata: async (jid) => groupCache.get(jid),
+})
+```
+
+## Devo sempre atualizar para a última versão do WhatsApp Web?
+
+Não. Evite chamar `fetchLatestWaWebVersion` em toda conexão — versões mais novas podem ser incompatíveis. Fique uma ou duas versões atrás e só sobrescreva a versão quando souber que seus protobufs combinam.
+
+## Como evito que as notificações sumam do meu celular?
+
+O Baileys marca sua presença como online ao conectar por padrão, o que suprime as notificações do celular. Defina `markOnlineOnConnect: false` na configuração do socket. Você também pode enviar `sock.sendPresenceUpdate('unavailable')` periodicamente.
+
+## A Mobile API é suportada?
+
+Não. O Baileys só suporta o protocolo do WhatsApp Web via Aparelhos Conectados. A autenticação por código de pareamento **não** é a Mobile API — é uma alternativa ao QR code para o mesmo fluxo de Aparelhos Conectados.
+
+## Onde reporto bugs ou peço ajuda?
+
+- Bugs: [GitHub Issues](https://github.com/WhiskeySockets/Baileys/issues)
+- Discussão: [GitHub Discussions](https://github.com/WhiskeySockets/Baileys/discussions)
+- Migração: [Migrar para o Baileys v7](/pt-BR/migration/v7) e [Migrar para o Baileys v8](/pt-BR/migration/v8)

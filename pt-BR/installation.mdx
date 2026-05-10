@@ -1,0 +1,141 @@
+---
+title: "Instale o Baileys no seu projeto Node.js"
+description: "Guia passo a passo para instalar o Baileys com npm, yarn ou a versão de borda do GitHub. Cobre requisitos do Node.js e dependências opcionais."
+---
+
+O Baileys é publicado no npm sob o escopo `@whiskeysockets/baileys`. Você pode instalá-lo com npm, yarn, pnpm ou qualquer outro gerenciador de pacotes do Node.js. Esta página cobre a versão estável, a build de borda direto do GitHub e os peer dependencies opcionais que liberam funcionalidades extras.
+
+## Requisitos
+
+Você precisa de **Node.js 20.0.0 ou superior**. O Baileys impõe isso através de uma checagem `preinstall` — a instalação falha com uma mensagem de erro clara se sua versão do Node.js for muito antiga.
+
+Verifique sua versão antes de instalar:
+
+```bash
+node --version
+```
+
+## Instale a versão estável
+
+A versão estável é o ponto de partida recomendado para projetos novos.
+
+<CodeGroup>
+
+```bash npm
+npm install @whiskeysockets/baileys
+```
+
+```bash yarn
+yarn add @whiskeysockets/baileys
+```
+
+</CodeGroup>
+
+## Instale a versão de borda
+
+A build de borda é construída direto do branch `master` no GitHub. Inclui as últimas correções e funcionalidades, mas não tem garantia de estabilidade.
+
+```bash
+yarn add github:WhiskeySockets/Baileys
+```
+
+<Note>
+  O repositório do Baileys usa Yarn 4 internamente via Corepack. Você pode usar npm, yarn ou qualquer outro gerenciador no seu próprio projeto — apenas quem contribui para o repositório do Baileys precisa do Yarn 4.
+</Note>
+
+## Importe o Baileys no seu projeto
+
+Após instalar, importe a exportação padrão no seu arquivo TypeScript ou JavaScript:
+
+```typescript
+import makeWASocket from '@whiskeysockets/baileys'
+```
+
+Você também pode importar exports nomeados junto com o padrão:
+
+```typescript
+import makeWASocket, { useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys'
+```
+
+## Peer dependencies opcionais
+
+O Baileys tem várias peer dependencies opcionais que habilitam funcionalidades adicionais. Instale apenas as que você precisar.
+
+### Miniaturas de imagens e figurinhas
+
+O Baileys pode gerar miniaturas automaticamente quando você envia imagens ou figurinhas. Instale `jimp` ou `sharp` — você não precisa dos dois.
+
+<CodeGroup>
+
+```bash jimp
+npm install jimp
+```
+
+```bash sharp
+npm install sharp
+```
+
+</CodeGroup>
+
+`sharp` é geralmente mais rápido para cargas de produção. `jimp` é uma implementação pura em JavaScript sem dependências nativas, o que facilita a instalação em ambientes restritos.
+
+### Pré-visualização de links
+
+Para gerar pré-visualizações ricas ao enviar URLs, instale `link-preview-js`:
+
+```bash
+npm install link-preview-js
+```
+
+### Miniaturas de vídeo
+
+A geração de miniaturas para mensagens de vídeo requer `ffmpeg` instalado como dependência do sistema. Instale pelo gerenciador de pacotes do seu sistema operacional:
+
+<CodeGroup>
+
+```bash macOS
+brew install ffmpeg
+```
+
+```bash Linux
+sudo apt-get install ffmpeg
+```
+
+```bash Windows
+winget install ffmpeg
+```
+
+</CodeGroup>
+
+### Decodificação de áudio
+
+O pacote `audio-decode` é uma peer dependency opcional usada para certas operações de processamento de áudio:
+
+```bash
+npm install audio-decode
+```
+
+## Resumo das peer dependencies
+
+| Pacote | Finalidade | Obrigatório |
+| --- | --- | --- |
+| `jimp` | Miniaturas automáticas para imagens e figurinhas | Não |
+| `sharp` | Alternativa mais rápida ao `jimp` para miniaturas | Não |
+| `link-preview-js` | Pré-visualizações ricas de links em mensagens | Não |
+| `ffmpeg` | Geração de miniaturas para mensagens de vídeo | Não |
+| `audio-decode` | Suporte ao processamento de áudio | Não |
+
+<Tip>
+  Para a maioria dos projetos, comece sem nenhuma peer dependency. Adicione `jimp` ou `sharp` quando precisar de miniaturas de imagem, e `link-preview-js` quando quiser pré-visualizações de URL.
+</Tip>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Início rápido" icon="bolt" href="/pt-BR/quickstart">
+    Conecte ao WhatsApp e envie sua primeira mensagem.
+  </Card>
+  <Card title="Autenticação" icon="key" href="/pt-BR/authentication/qr-code">
+    Vincule sua conta do WhatsApp com QR code ou código de pareamento.
+  </Card>
+</CardGroup>

@@ -1,0 +1,185 @@
+---
+title: "Envie mensagens do WhatsApp com o Baileys"
+description: "Envie texto, links, contatos, localizações, reações, enquetes e mensagens fixadas usando sock.sendMessage."
+---
+
+Toda mensagem no Baileys passa por um único método: `sock.sendMessage(jid, content, options?)`.
+
+```typescript
+sock.sendMessage(jid, content, options)
+```
+
+<Info>
+  Veja a lista completa de tipos no [type alias `AnyMessageContent`](https://baileys.wiki/docs/api/type-aliases/AnyMessageContent/) e todas as opções em [`MiscMessageGenerationOptions`](https://baileys.wiki/docs/api/type-aliases/MiscMessageGenerationOptions/).
+</Info>
+
+## Mensagens não-mídia
+
+### Mensagem de texto
+
+```typescript
+await sock.sendMessage(jid, { text: 'hello word' })
+```
+
+### Citação / resposta
+
+```typescript
+await sock.sendMessage(jid, { text: 'hello word' }, { quoted: message })
+```
+
+### Mencionar um usuário
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        text: '@12345678901',
+        mentions: ['12345678901@s.whatsapp.net']
+    }
+)
+```
+
+### Encaminhar uma mensagem
+
+```typescript
+const msg = getMessageFromStore()
+await sock.sendMessage(jid, { forward: msg })
+```
+
+### Localização
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        location: {
+            degreesLatitude: 24.121231,
+            degreesLongitude: 55.1121221
+        }
+    }
+)
+```
+
+### Contato (vCard)
+
+```typescript
+const vcard = 'BEGIN:VCARD\n'
+            + 'VERSION:3.0\n'
+            + 'FN:Jeff Singh\n'
+            + 'ORG:Ashoka Uni;\n'
+            + 'TEL;type=CELL;type=VOICE;waid=911234567890:+91 12345 67890\n'
+            + 'END:VCARD'
+
+await sock.sendMessage(
+    id,
+    {
+        contacts: {
+            displayName: 'Jeff',
+            contacts: [{ vcard }]
+        }
+    }
+)
+```
+
+### Reação
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        react: {
+            text: '💖',
+            key: message.key
+        }
+    }
+)
+```
+
+### Fixar mensagem
+
+| Duração | Segundos |
+| --- | --- |
+| 24 horas | `86400` |
+| 7 dias | `604800` |
+| 30 dias | `2592000` |
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        pin: {
+            type: 1,
+            time: 86400,
+            key: message.key
+        }
+    }
+)
+```
+
+### Enquete
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        poll: {
+            name: 'My Poll',
+            values: ['Option 1', 'Option 2'],
+            selectableCount: 1,
+            toAnnouncementGroup: false
+        }
+    }
+)
+```
+
+<Tip>
+  Votos são cifrados. Para lê-los, escute `messages.update` e use `getAggregateVotesInPollMessage`.
+</Tip>
+
+### Pré-visualização de links
+
+```bash
+yarn add link-preview-js
+```
+
+```typescript
+await sock.sendMessage(
+    jid,
+    {
+        text: 'Hi, this was sent using https://github.com/whiskeysockets/baileys'
+    }
+)
+```
+
+### Mensagens que desaparecem
+
+| Duração | Segundos |
+| --- | --- |
+| Remover | `0` |
+| 24 horas | `86400` |
+| 7 dias | `604800` |
+| 90 dias | `7776000` |
+
+<Steps>
+  <Step title="Habilitar mensagens que desaparecem na conversa">
+    ```typescript
+    await sock.sendMessage(
+        jid,
+        { disappearingMessagesInChat: WA_DEFAULT_EPHEMERAL }
+    )
+    ```
+  </Step>
+  <Step title="Enviar uma única mensagem efêmera">
+    ```typescript
+    await sock.sendMessage(jid, { text: 'hello' }, { ephemeralExpiration: WA_DEFAULT_EPHEMERAL })
+    ```
+  </Step>
+  <Step title="Desabilitar mensagens que desaparecem na conversa">
+    ```typescript
+    await sock.sendMessage(
+        jid,
+        { disappearingMessagesInChat: false }
+    )
+    ```
+  </Step>
+</Steps>

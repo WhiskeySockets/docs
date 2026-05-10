@@ -1,0 +1,110 @@
+---
+title: "Estender o Baileys com funcionalidades customizadas"
+description: "Registre callbacks brutos do WebSocket, ative debug logging e entenda o protocolo de binary nodes do WhatsApp."
+---
+
+## Ative debug logging
+
+```typescript
+import makeWASocket from '@whiskeysockets/baileys'
+import P from 'pino'
+
+const sock = makeWASocket({
+    logger: P({ level: 'debug' }),
+})
+```
+
+Você verá entradas assim:
+
+```json
+{
+    "level": 10,
+    "fromMe": false,
+    "frame": {
+        "tag": "ib",
+        "attrs": {
+            "from": "@s.whatsapp.net"
+        },
+        "content": [
+            {
+                "tag": "edge_routing",
+                "attrs": {},
+                "content": [
+                    {
+                        "tag": "routing_info",
+                        "attrs": {},
+                        "content": {
+                            "type": "Buffer",
+                            "data": [8,2,8,5]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "msg":"communication"
+}
+```
+
+## Como o WhatsApp comunica: binary nodes
+
+| Campo | Descrição |
+| --- | --- |
+| `tag` | Sobre o que é o frame. |
+| `attrs` | Mapa de chave-valor com metadados. |
+| `content` | Payload — array de nodes filhos ou `Buffer`. |
+
+```typescript
+import type { BinaryNode } from '@whiskeysockets/baileys'
+```
+
+<Tip>
+  Para a camada criptográfica, estude o protocolo Libsignal e o protocolo Noise.
+</Tip>
+
+## Registrar callbacks de WebSocket
+
+### Match por tag
+
+```typescript
+sock.ws.on('CB:edge_routing', (node: BinaryNode) => { })
+```
+
+### Match por tag e atributo
+
+```typescript
+sock.ws.on('CB:edge_routing,id:abcd', (node: BinaryNode) => { })
+```
+
+### Match por tag, atributo e tag de conteúdo
+
+```typescript
+sock.ws.on('CB:edge_routing,id:abcd,routing_info', (node: BinaryNode) => { })
+```
+
+### Exemplo com tipos
+
+```typescript
+import makeWASocket, { type BinaryNode } from '@whiskeysockets/baileys'
+import P from 'pino'
+
+const sock = makeWASocket({
+    logger: P({ level: 'debug' }),
+})
+
+sock.ws.on('CB:edge_routing', (node: BinaryNode) => {
+    console.log('received edge_routing node', node)
+})
+```
+
+## Fluxo de eventos
+
+<Tip>
+  Seus callbacks `CB:` rodam antes dos handlers internos, dando acesso a mensagens de protocolo que o Baileys ainda não expõe.
+</Tip>
+
+## Trabalho avançado de protocolo
+
+<Warning>
+  Modificar fluxos criptográficos pode quebrar entrega silenciosamente. Faça mudanças aqui só com entendimento profundo de Noise e Signal.
+</Warning>

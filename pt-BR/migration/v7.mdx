@@ -1,0 +1,101 @@
+---
+title: "Migrar para o Baileys v7"
+description: "Mudanças incompatíveis no Baileys 7.x: LIDs, ACKs removidos, builds ESM, protobufs reduzidos e suporte ao Meta Coexistence."
+---
+
+## LIDs (Linked Identity JIDs)
+
+O WhatsApp finalizou o rollout de LID em 2024. Um **LIDJID** (Linked Identity Jabber Identifier) é um identificador por usuário no servidor `@lid` que anonimiza números em grupos grandes, em contraste ao **PNJID** legado (Phone Number Jabber Identifier) em `@s.whatsapp.net`. Por padrão, todas as novas sessões Signal no Baileys 7.x são criadas em LID. Veja [JIDs do WhatsApp explicados](/pt-BR/concepts/jids#pn--lid-o-modelo-de-identidade-dupla).
+
+<Warning>
+  O sistema LID exige que seu auth state suporte as chaves `lid-mapping`, `device-list` e `tctoken`.
+</Warning>
+
+Pontos-chave:
+
+- **Um LID é um JID.** Único por usuário, não por grupo.
+- **Você consegue resolver PN → LID, mas não o inverso.** O Baileys expõe `sock.signalRepository.lidMapping` com `storeLIDPNMapping`, `getLIDForPN`, `getLIDsForPNs` e `getPNForLID`.
+- **`onWhatsApp` não retorna mais LIDs.** Use `getLIDForPN` / `getLIDsForPNs`.
+- **`isJidUser` foi removido** em favor de `isPnUser`.
+
+### Mudanças em MessageKey
+
+- `remoteJidAlt` — JID alternativo para mensagens diretas
+- `participantAlt` — JID alternativo para grupos, transmissões e canais
+
+### Mudanças em GroupMetadata
+
+Todo campo de ID tem um par PN: `owner` é LID; `ownerPn` tem o PN. `descOwner` / `descOwnerPn`, etc.
+
+### Mudanças em Contact
+
+`Contact` não tem mais `jid` e `lid` separados:
+
+- `id` é o identificador preferido.
+- `phoneNumber` populado quando `id` é LID.
+- `lid` populado quando `id` é PN.
+
+### Compartilhamento de número
+
+- Empresas: `{ requestPhoneNumber: true }`
+- Usuários: `{ sharePhoneNumber: true }`
+
+### Novo evento
+
+`lid-mapping.update` dispara quando um par PN ↔ LID novo é descoberto.
+
+### Novo enum
+
+`WAMessageAddressingMode`.
+
+<Info>
+  Não tente "restaurar" PN JIDs. Migre para LIDs.
+</Info>
+
+## ACKs não são mais enviados
+
+O WhatsApp tem banido contas que enviam ACKs em entregas com sucesso — desligar é o padrão seguro agora.
+
+## Meta Coexistence
+
+O Baileys 7.x consegue enviar, receber e parear com contas com Coexistence. Suporte experimental — reporte issues.
+
+## Apenas ESM
+
+Baileys 7.x é só ESM.
+
+### Opção 1 — Converter para ESM (recomendado)
+
+Defina `"type": "module"` no `package.json` e troque `require()` por `import`.
+
+### Opção 2 — Importar dinamicamente do CommonJS
+
+```ts
+const fs = require('fs')
+
+async function loadESMModule() {
+  try {
+    const { default: makeWASocket } = await import('@whiskeysockets/baileys')
+    const socket = makeWASocket({ /* ... */ })
+  } catch (error) {
+    console.error('Error loading ESM module:', error)
+  }
+}
+
+loadESMModule()
+```
+
+O projeto também migrou para Yarn v4. Requer `corepack`.
+
+## Protobufs mais enxutos
+
+Restantes:
+
+- `.create()` — em vez de `.fromObject()`.
+- `.encode()` e `.decode()`.
+
+Use `BufferJSON` ao (de)serializar protos. Use `decodeAndHydrate()` em vez de `decode()` puro.
+
+## Referência
+
+[GitHub releases](https://github.com/WhiskeySockets/Baileys/releases). Link curto: [whiskey.so/migrate-latest](https://whiskey.so/migrate-latest).

@@ -1,0 +1,229 @@
+---
+title: "Resolver problemas comuns do Baileys"
+description: "Diagnostique e corrija problemas: quedas de conexão, falhas de QR, problemas de entrega, expiração de sessão e erros de upload de mídia."
+---
+
+## Problemas comuns
+
+<AccordionGroup>
+
+  <Accordion title="A conexão fica caindo / reconectando">
+    O Baileys não reconecta automaticamente — é proposital. Cheque `DisconnectReason.loggedOut` antes de retry. `401` = deslogado ativamente, não adianta retry.
+
+    ```typescript
+    import makeWASocket, { DisconnectReason, useMultiFileAuthState } from '@whiskeysockets/baileys'
+    import { Boom } from '@hapi/boom'
+
+    async function connectToWhatsApp () {
+        const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
+        const sock = makeWASocket({
+            auth: state
+        })
+        sock.ev.on('connection.update', (update) => {
+            const { connection, lastDisconnect } = update
+            if(connection === 'close') {
+                const shouldReconnect = (lastDisconnect.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut
+                if(shouldReconnect) {
+                    connectToWhatsApp()
+                }
+            } else if(connection === 'open') {
+                console.log('opened connection')
+            }
+        })
+
+        sock.ev.on('creds.update', saveCreds)
+    }
+
+    connectToWhatsApp()
+    ```
+  </Accordion>
+
+  <Accordion title="QR code não aparece ou fica atualizando">
+    Se o QR nunca aparece, geralmente já existem credenciais válidas. Para forçar um QR novo, apague a pasta `auth_info_baileys/` e reinicie.
+
+    ```typescript
+    sock.ev.on('connection.update', (update) => {
+        console.log('connection update:', update)
+    })
+    ```
+
+    <Note>
+      `printQRInTerminal` está deprecated. Escute o `'qr'` em `connection.update` e renderize com `qrcode-terminal`.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Mensagens falhando ao enviar">
+    Implemente `getMessage` em `SocketConfig`:
+
+    ```typescript
+    const sock = makeWASocket({
+        getMessage: async (key) => await getMessageFromStore(key)
+    })
+    ```
+
+    Para retries completos:
+
+    ```typescript
+    import NodeCache from '@cacheable/node-cache'
+    import { CacheStore } from '@whiskeysockets/baileys'
+
+    const msgRetryCounterCache = new NodeCache() as CacheStore
+
+    const sock = makeWASocket({
+        msgRetryCounterCache,
+        getMessage: async (key) => await getMessageFromStore(key),
+    })
+    ```
+  </Accordion>
+
+  <Accordion title="Votos de enquete não decifrando">
+    Você precisa de `getMessage` em `SocketConfig` e `getAggregateVotesInPollMessage`.
+
+    ```typescript
+    import { getAggregateVotesInPollMessage } from '@whiskeysockets/baileys'
+
+    sock.ev.on('messages.update', event => {
+        for(const { key, update } of event) {
+            if(update.pollUpdates) {
+                const pollCreation = await getMessage(key)
+                if(pollCreation) {
+                    console.log(
+                        'aggregation: ',
+                        getAggregateVotesInPollMessage({
+                            message: pollCreation,
+                            pollUpdates: update.pollUpdates,
+                        })
+                    )
+                }
+            }
+        }
+    })
+    ```
+  </Accordion>
+
+  <Accordion title="Áudios não tocam em alguns aparelhos">
+    Converta com `ffmpeg`:
+
+    ```bash
+    ffmpeg -i input.mp4 -avoid_negative_ts make_zero -ac 1 output.ogg
+    ```
+
+    ```typescript
+    await sock.sendMessage(jid, {
+        audio: { url: './output.ogg' },
+        mimetype: 'audio/mp4'
+    })
+    ```
+  </Accordion>
+
+  <Accordion title="Mensagens em grupo falhando ou lentas">
+    Configure `cachedGroupMetadata`:
+
+    ```typescript
+    import NodeCache from '@cacheable/node-cache'
+
+    const groupCache = new NodeCache({ stdTTL: 5 * 60, useClones: false })
+
+    const sock = makeWASocket({
+        cachedGroupMetadata: async (jid) => groupCache.get(jid)
+    })
+
+    sock.ev.on('groups.update', async ([event]) => {
+        const metadata = await sock.groupMetadata(event.id)
+        groupCache.set(event.id, metadata)
+    })
+
+    sock.ev.on('group-participants.update', async (event) => {
+        const metadata = await sock.groupMetadata(event.id)
+        groupCache.set(event.id, metadata)
+    })
+    ```
+  </Accordion>
+
+  <Accordion title="Sendo deslogado de todos os aparelhos">
+    Geralmente por `chatModify` com dados incorretos.
+
+    ```typescript
+    // ok
+    await sock.chatModify({ archive: true, lastMessages: [lastMsgInChat] }, jid)
+
+    // perigoso
+    await sock.chatModify({ archive: true, lastMessages: [] }, jid)
+    ```
+
+    <Warning>
+      Nunca chame `chatModify` com dados não verificados.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Sessão expirada">
+    <Steps>
+      <Step title="Apague a pasta de auth state">
+        ```bash
+        rm -rf auth_info_baileys/
+        ```
+      </Step>
+      <Step title="Reinicie e escaneie novo QR">
+      </Step>
+      <Step title="Verifique que salva creds em todo update">
+        ```typescript
+        sock.ev.on('creds.update', saveCreds)
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Mídia não baixa (404)">
+    ```typescript
+    await sock.updateMediaMessage(msg)
+    ```
+
+    Em `downloadMediaMessage`:
+
+    ```typescript
+    import { createWriteStream } from 'fs'
+    import { downloadMediaMessage, getContentType } from '@whiskeysockets/baileys'
+
+    sock.ev.on('messages.upsert', async ({ messages }) => {
+        for (const m of messages) {
+            if (!m.message) return
+            const messageType = getContentType(m.message)
+
+            if (messageType === 'imageMessage') {
+                const stream = await downloadMediaMessage(
+                    m,
+                    'stream',
+                    { },
+                    {
+                        logger,
+                        reuploadRequest: sock.updateMediaMessage
+                    }
+                )
+                const writeStream = createWriteStream('./my-download.jpeg')
+                stream.pipe(writeStream)
+            }
+        }
+    })
+    ```
+  </Accordion>
+
+</AccordionGroup>
+
+## Debug logging completo
+
+```typescript
+import makeWASocket from '@whiskeysockets/baileys'
+import P from 'pino'
+
+const sock = makeWASocket({
+    logger: P({ level: 'debug' }),
+})
+```
+
+Para mais, veja [Estender o Baileys](/pt-BR/advanced/custom-functionality).
+
+## Suporte
+
+<Card title="Discord do Baileys" icon="discord" href="https://discord.gg/WeJM5FP9GG">
+  Servidor Discord da comunidade.
+</Card>

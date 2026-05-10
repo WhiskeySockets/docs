@@ -39,7 +39,7 @@ sock.ev.on('creds.update', saveCreds)
 
 ### `browser`
 
-Controls how Baileys identifies itself to WhatsApp. The type is `WABrowserDescription`, which is a `[platform, browserName, version]` tuple. Use the `Browsers` constant instead of writing the tuple manually.
+Controls how Baileys identifies itself to WhatsApp. The type is `WABrowserDescription`, which is a `[platform, browserName, version]` tuple. Use the `Browsers` constant instead of writing the tuple manually — this is also the name that appears in WhatsApp's **Linked Devices** list.
 
 ```typescript
 import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
@@ -56,7 +56,35 @@ const sock = makeWASocket({
 })
 ```
 
-The browser you choose affects how much history WhatsApp sends on first sync. Desktop browser identities (macOS or Windows) receive more history than mobile ones.
+A few ready-made presets are available:
+
+| Preset | Example |
+| --- | --- |
+| `Browsers.ubuntu('My App')` | Ubuntu — My App |
+| `Browsers.macOS('Desktop')` | macOS — Desktop |
+| `Browsers.windows('My App')` | Windows — My App |
+
+The browser you choose also affects how much history WhatsApp sends on first sync. Desktop identities (macOS or Windows) receive significantly more history than mobile ones.
+
+### Receiving full message history
+
+By default, Baileys connects with a Chrome browser profile, which limits how much history WhatsApp delivers on the initial sync. To request the full history, set `syncFullHistory: true` and use the `Browsers.macOS('Desktop')` preset, which WhatsApp treats as a desktop client eligible for extended history.
+
+```typescript
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  browser: Browsers.macOS('Desktop'),
+  syncFullHistory: true,
+})
+```
+
+History messages arrive asynchronously via the `messaging-history.set` event after the connection opens. See [Sync chat history](/advanced/history-sync) for details on consuming the payload.
+
+<Note>
+  Requesting full history can significantly increase startup time and memory usage on accounts with large chat histories.
+</Note>
 
 ### `logger`
 

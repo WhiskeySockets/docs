@@ -1,0 +1,104 @@
+---
+title: "Configurar privacidade e bloqueios do WhatsApp no Baileys"
+description: "Bloqueie usuários, configure visto por último, recibos de leitura, acesso a foto de perfil e modo padrão de mensagens efêmeras."
+---
+
+## Bloquear / desbloquear
+
+```typescript
+await sock.updateBlockStatus(jid, 'block')
+await sock.updateBlockStatus(jid, 'unblock')
+```
+
+## Buscar todas as configurações
+
+```typescript
+const privacySettings = await sock.fetchPrivacySettings(true)
+```
+
+## Buscar lista de bloqueados
+
+```typescript
+const response = await sock.fetchBlocklist()
+```
+
+## Privacidade do visto por último
+
+```typescript
+const value = 'all' // 'contacts' | 'contact_blacklist' | 'none'
+await sock.updateLastSeenPrivacy(value)
+```
+
+| Valor | Quem vê seu visto por último |
+| --- | --- |
+| `'all'` | Todos |
+| `'contacts'` | Apenas seus contatos |
+| `'contact_blacklist'` | Todos exceto uma lista negra |
+| `'none'` | Ninguém |
+
+## Privacidade do online
+
+```typescript
+const value = 'all' // 'match_last_seen'
+await sock.updateOnlinePrivacy(value)
+```
+
+| Valor | Quem vê seu status online |
+| --- | --- |
+| `'all'` | Todos |
+| `'match_last_seen'` | Mesma audiência do visto por último |
+
+## Privacidade da foto de perfil
+
+```typescript
+const value = 'all' // 'contacts' | 'contact_blacklist' | 'none'
+await sock.updateProfilePicturePrivacy(value)
+```
+
+## Privacidade do status
+
+```typescript
+const value = 'all' // 'contacts' | 'contact_blacklist' | 'none'
+await sock.updateStatusPrivacy(value)
+```
+
+## Recibos de leitura
+
+```typescript
+const value = 'all' // 'none'
+await sock.updateReadReceiptsPrivacy(value)
+```
+
+| Valor | Comportamento |
+| --- | --- |
+| `'all'` | Envia recibos de leitura a todos |
+| `'none'` | Desativa recibos de leitura |
+
+<Note>
+  Ao desativar, você também para de recebê-los.
+</Note>
+
+## Adição em grupos
+
+```typescript
+const value = 'all' // 'contacts' | 'contact_blacklist'
+await sock.updateGroupsAddPrivacy(value)
+```
+
+## Modo padrão de mensagens que desaparecem
+
+```typescript
+const ephemeral = 86400
+await sock.updateDefaultDisappearingMode(ephemeral)
+```
+
+| Duração | Segundos |
+| --- | --- |
+| Off | `0` |
+| 24 horas | `86400` |
+| 7 dias | `604800` |
+| 90 dias | `7776000` |
+
+<Tip>
+  Esse padrão se aplica só a conversas novas — não muda as existentes.
+</Tip>
