@@ -1,6 +1,6 @@
 ---
-title: "Manage chats: archive, mute, pin, and delete"
-description: "Use chatModify to archive, mute, mark read, pin, star, or delete WhatsApp chats and messages. Reference for all supported chat modification operations."
+title: "Manage chats"
+description: "Archive, mute, mark read, pin, star, or delete chats and messages."
 ---
 
 `sock.chatModify(modification, jid)` lets you send encrypted app-state updates to WhatsApp for a specific chat. Each modification is a plain object describing the operation — archive, mute, read status, delete, pin, or star.
@@ -154,11 +154,11 @@ Pass `'image'` as the second argument to get the full-resolution photo instead o
 
 ```typescript
 // for low res picture
-const ppUrl = await sock.profilePictureUrl(jid)
-console.log(ppUrl)
+const ppLowRes = await sock.profilePictureUrl(jid)
+console.log(ppLowRes)
 
 // for high res picture
-const ppUrl = await sock.profilePictureUrl(jid, 'image')
+const ppHighRes = await sock.profilePictureUrl(jid, 'image')
 ```
 
 ### Fetch a business profile

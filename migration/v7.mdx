@@ -1,13 +1,13 @@
 ---
-title: "Migrate to Baileys v7"
-description: "Breaking changes in Baileys 7.x: LIDs, removed ACKs, ESM-only builds, slimmed-down protobufs, and Meta Coexistence support."
+title: "v7 migration"
+description: "Breaking changes in 7.x: LIDs, removed ACKs, ESM-only, slimmer protobufs."
 ---
 
 Baileys 7.x introduces several breaking changes you must address when upgrading from 6.x. This guide walks through each one in the order most projects encounter them.
 
-## LIDs (Local Identifiers)
+## LIDs (Linked Identity JIDs)
 
-WhatsApp finalized its LID rollout in 2024. A LID is a per-user identifier (rendered as `+43.......21` in the WhatsApp UI) that anonymizes phone numbers in large groups. By default, all new Signal sessions in Baileys 7.x are created in the LID format, and existing sessions are migrated automatically.
+WhatsApp finalized its LID rollout in 2024. A **LIDJID** (Linked Identity Jabber Identifier) is a per-user identifier on the `@lid` server that anonymizes phone numbers in large groups, in contrast to the legacy **PNJID** (Phone Number Jabber Identifier) on `@s.whatsapp.net`. By default, all new Signal sessions in Baileys 7.x are created in the LID format, and existing sessions are migrated automatically. See [WhatsApp JIDs explained](/concepts/jids) for the full PN/LID model.
 
 <Warning>
   The LID system requires your auth state to support the `lid-mapping`, `device-list`, and `tctoken` keys. Check your `SignalDataTypeMap` and update your custom auth implementation before upgrading.
@@ -16,7 +16,7 @@ WhatsApp finalized its LID rollout in 2024. A LID is a per-user identifier (rend
 Key things to know:
 
 - **A LID is a JID.** It is unique per user, not per group. You can message anyone using either their LID or their PN (phone number JID, `user@s.whatsapp.net`).
-- **You can resolve PN → LID, but not the reverse,** using `onWhatsApp()` or the USyncProtocol. Internally, Baileys exposes a mapping store on `sock.signalRepository.lidMapping` with `storeLIDPNMapping`, `storeLIDPNMappings`, `getLIDForPN`, `getLIDsForPNs`, and `getPNForLID`.
+- **Network resolution is one-way: PN → LID.** Use `onWhatsApp()` or the USyncProtocol to look up a LID for a given phone number; the reverse direction is not exposed by WhatsApp. Internally, Baileys exposes a mapping store on `sock.signalRepository.lidMapping` with `storeLIDPNMapping`, `storeLIDPNMappings`, `getLIDForPN`, `getLIDsForPNs`, and `getPNForLID`. The `getPNForLID` lookup only succeeds for pairs Baileys has previously cached from inbound traffic — it cannot fetch a PN for an unknown LID.
 - **`onWhatsApp` no longer returns LIDs.** Use `getLIDForPN` / `getLIDsForPNs` instead.
 - **`isJidUser` was removed** in favor of `isPnUser`. Both PNs and LIDs are JIDs, so the old name was misleading.
 

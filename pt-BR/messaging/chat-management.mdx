@@ -1,0 +1,199 @@
+---
+title: "Gerenciar conversas"
+description: "Arquive, silencie, marque, fixe, favorite ou delete conversas e mensagens."
+---
+
+`sock.chatModify(modification, jid)` envia atualizações criptografadas de app-state para o WhatsApp em uma conversa específica. Cada modificação é um objeto descrevendo a operação — arquivar, silenciar, marcar como lida, deletar, fixar ou favoritar.
+
+<Warning>
+  Se você enviar um `chatModify` malformado ou inconsistente, o WhatsApp pode te deslogar de todos os aparelhos e exigir um novo login. Sempre passe o `lastMessages` correto quando a API exigir.
+</Warning>
+
+## Arquivar uma conversa
+
+Passe a mensagem mais recente da conversa em `lastMessages` para o WhatsApp reconciliar o estado. Use `archive: false` para desarquivar.
+
+```typescript
+const lastMsgInChat = await getLastMessageInChat(jid) // implemente do seu lado
+await sock.chatModify({ archive: true, lastMessages: [lastMsgInChat] }, jid)
+```
+
+## Silenciar / dessilenciar
+
+A duração do silenciamento é em **milissegundos**. Use `null` para dessilenciar.
+
+| Duração | Milissegundos |
+| --- | --- |
+| Dessilenciar | `null` |
+| 8 horas | `28800000` |
+| 7 dias | `604800000` |
+
+```typescript
+// silenciar por 8 horas
+await sock.chatModify({ mute: 8 * 60 * 60 * 1000 }, jid)
+// dessilenciar
+await sock.chatModify({ mute: null }, jid)
+```
+
+## Marcar como lida ou não lida
+
+```typescript
+const lastMsgInChat = await getLastMessageInChat(jid) // implemente do seu lado
+// marcar como não lida
+await sock.chatModify({ markRead: false, lastMessages: [lastMsgInChat] }, jid)
+```
+
+## Deletar mensagem só para você
+
+Remove a mensagem apenas da sua visualização. Outros participantes não são afetados. Forneça o `id` da mensagem, se foi enviada por você (`fromMe`) e o `timestamp`.
+
+```typescript
+await sock.chatModify(
+    {
+        clear: {
+            messages: [
+                {
+                    id: 'ATWYHDNNWU81732J',
+                    fromMe: true,
+                    timestamp: '1654823909'
+                }
+            ]
+        }
+    },
+    jid
+)
+```
+
+## Deletar uma conversa
+
+Remove a conversa da sua lista. Passe a última mensagem para o WhatsApp sincronizar a deleção corretamente.
+
+```typescript
+const lastMsgInChat = await getLastMessageInChat(jid) // implemente do seu lado
+await sock.chatModify({
+        delete: true,
+        lastMessages: [
+            {
+                key: lastMsgInChat.key,
+                messageTimestamp: lastMsgInChat.messageTimestamp
+            }
+        ]
+    },
+    jid
+)
+```
+
+## Fixar / desfixar conversa
+
+```typescript
+await sock.chatModify({
+        pin: true // ou `false` para desfixar
+    },
+    jid
+)
+```
+
+## Favoritar / desfavoritar mensagem
+
+Use `star: true` para favoritar e `star: false` para desfavoritar. Você pode incluir várias mensagens na mesma chamada.
+
+```typescript
+await sock.chatModify({
+        star: {
+            messages: [
+                {
+                    id: 'messageID',
+                    fromMe: true // ou `false`
+                }
+            ],
+            star: true // - true: favoritar; false: desfavoritar
+        }
+    },
+    jid
+)
+```
+
+---
+
+## Consultas de usuário
+
+### Verificar se um JID existe no WhatsApp
+
+```typescript
+const [result] = await sock.onWhatsApp(jid)
+if (result.exists) console.log(`${jid} existe no WhatsApp, como jid: ${result.jid}`)
+```
+
+### Consultar histórico
+
+Você precisa da mensagem mais antiga atualmente na conversa para paginar para trás. O histórico chega no evento `messaging-history.set` — não como retorno direto.
+
+```typescript
+const msg = await getOldestMessageInChat(jid) // implemente do seu lado
+await sock.fetchMessageHistory(
+    50, // quantidade (máx. 50 por consulta)
+    msg.key,
+    msg.messageTimestamp
+)
+```
+
+<Note>
+  As mensagens chegam pelo evento `messaging-history.set`, e não são retornadas diretamente por `fetchMessageHistory`.
+</Note>
+
+### Buscar texto de status
+
+```typescript
+const status = await sock.fetchStatus(jid)
+console.log('status: ' + status)
+```
+
+### Buscar foto de perfil
+
+Passe `'image'` como segundo argumento para obter a foto em alta resolução em vez do thumbnail.
+
+```typescript
+// foto em baixa resolução
+const ppLowRes = await sock.profilePictureUrl(jid)
+console.log(ppLowRes)
+
+// foto em alta resolução
+const ppHighRes = await sock.profilePictureUrl(jid, 'image')
+```
+
+### Buscar perfil business
+
+```typescript
+const profile = await sock.getBusinessProfile(jid)
+console.log('descrição business: ' + profile.description + ', categoria: ' + profile.category)
+```
+
+---
+
+## Atualizar seu perfil
+
+### Alterar status do perfil
+
+```typescript
+await sock.updateProfileStatus('Hello World!')
+```
+
+### Alterar nome do perfil
+
+```typescript
+await sock.updateProfileName('My name')
+```
+
+### Alterar foto de perfil
+
+Aceita os mesmos tipos `WAMediaUpload` das mensagens de mídia (`Buffer`, `{ url }` ou `{ stream }`).
+
+```typescript
+await sock.updateProfilePicture(jid, { url: './new-profile-picture.jpeg' })
+```
+
+### Remover foto de perfil
+
+```typescript
+await sock.removeProfilePicture(jid)
+```

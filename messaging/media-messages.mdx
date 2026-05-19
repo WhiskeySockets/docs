@@ -1,6 +1,6 @@
 ---
-title: "Send and receive media in WhatsApp"
-description: "Send images, videos, audio, documents, and GIFs with Baileys. Learn WAMediaUpload types, thumbnail generation, and how to download received media."
+title: "Media messages"
+description: "Send and download images, video, audio, documents, GIFs, and stickers."
 ---
 
 Baileys accepts media in three forms via the `WAMediaUpload` type: a raw `Buffer`, a `{ url: '...' }` object pointing to a remote or local path, or a `{ stream: Stream }` object backed by a Node.js `Readable`. All three forms work identically across image, video, audio, document, and sticker messages.
@@ -22,7 +22,7 @@ Prefer `{ url }` or `{ stream }` over a raw `Buffer`. When you pass a URL, Baile
 
 ```typescript
 await sock.sendMessage(
-    id,
+    jid,
     {
         image: {
             url: './Media/ma_img.png'
@@ -38,7 +38,7 @@ Set `ptv: true` to send the video as a video note (circle video).
 
 ```typescript
 await sock.sendMessage(
-    id,
+    jid,
     {
         video: {
             url: './Media/ma_gif.mp4'
@@ -69,7 +69,7 @@ await sock.sendMessage(
 For audio to play correctly across all devices, convert your file with `ffmpeg` before sending. The key flags are `libopus` codec, single channel (`-ac 1`), and `avoid_negative_ts make_zero`.
 
 ```bash
-ffmpeg -i input.mp4 -avoid_negative_ts make_zero -ac 1 output.ogg
+ffmpeg -i input.mp4 -c:a libopus -ac 1 -avoid_negative_ts make_zero output.ogg
 ```
 
 ```typescript
@@ -77,9 +77,9 @@ await sock.sendMessage(
     jid,
     {
         audio: {
-            url: './Media/audio.mp3'
+            url: './Media/output.ogg'
         },
-        mimetype: 'audio/mp4'
+        mimetype: 'audio/ogg; codecs=opus'
     }
 )
 ```
@@ -97,7 +97,7 @@ Add `viewOnce: true` to any media content object to make the message self-destru
 
 ```typescript
 await sock.sendMessage(
-    id,
+    jid,
     {
         image: {
             url: './Media/ma_img.png'

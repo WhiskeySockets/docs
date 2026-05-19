@@ -1,6 +1,6 @@
 ---
-title: "Configure the Baileys socket connection"
-description: "Explore all SocketConfig options in Baileys: auth, browser, logger, caching, retries, timeouts, and more. Tune your socket for production use."
+title: "Socket config"
+description: "All `SocketConfig` options: auth, browser, logger, caching, retries, timeouts."
 ---
 
 Every Baileys connection starts by calling `makeWASocket` with a `SocketConfig` object. Most options have sensible defaults defined in `DEFAULT_CONNECTION_CONFIG`, so you only need to provide the ones that matter for your use case. This page walks through every option you are likely to configure in a real application.
@@ -15,6 +15,7 @@ The only truly required field. You must pass an `AuthenticationState` object con
 import makeWASocket, { useMultiFileAuthState, makeCacheableSignalKeyStore } from '@whiskeysockets/baileys'
 import P from 'pino'
 
+const logger = P({ level: 'silent' })
 const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
 
 const sock = makeWASocket({
@@ -39,7 +40,7 @@ sock.ev.on('creds.update', saveCreds)
 
 ### `browser`
 
-Controls how Baileys identifies itself to WhatsApp. The type is `WABrowserDescription`, which is a `[platform, browserName, version]` tuple. Use the `Browsers` constant instead of writing the tuple manually.
+Controls how Baileys identifies itself to WhatsApp. The type is `WABrowserDescription`, which is a `[platform, browserName, version]` tuple. Use the `Browsers` constant instead of writing the tuple manually — this is also the name that appears in WhatsApp's **Linked Devices** list.
 
 ```typescript
 import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
@@ -56,7 +57,35 @@ const sock = makeWASocket({
 })
 ```
 
-The browser you choose affects how much history WhatsApp sends on first sync. Desktop browser identities (macOS or Windows) receive more history than mobile ones.
+A few ready-made presets are available:
+
+| Preset | Example |
+| --- | --- |
+| `Browsers.ubuntu('My App')` | Ubuntu — My App |
+| `Browsers.macOS('Desktop')` | macOS — Desktop |
+| `Browsers.windows('My App')` | Windows — My App |
+
+The browser you choose also affects how much history WhatsApp sends on first sync. Desktop identities (macOS or Windows) receive significantly more history than mobile ones.
+
+### Receiving full message history
+
+By default, Baileys connects with a Chrome browser profile, which limits how much history WhatsApp delivers on the initial sync. `syncFullHistory` is already `true` by default — the key step is switching the browser preset to `Browsers.macOS('Desktop')`, which WhatsApp treats as a desktop client eligible for extended history.
+
+```typescript
+import makeWASocket, { Browsers } from '@whiskeysockets/baileys'
+
+const sock = makeWASocket({
+  auth: state,
+  browser: Browsers.macOS('Desktop'),
+  syncFullHistory: true,
+})
+```
+
+History messages arrive asynchronously via the `messaging-history.set` event after the connection opens. See [Sync chat history](/advanced/history-sync) for details on consuming the payload.
+
+<Note>
+  Requesting full history can significantly increase startup time and memory usage on accounts with large chat histories.
+</Note>
 
 ### `logger`
 

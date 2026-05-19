@@ -1,6 +1,6 @@
 ---
-title: "Send WhatsApp messages with Baileys"
-description: "Send text, links, contacts, locations, reactions, polls, and pin messages using sock.sendMessage. Full reference with working TypeScript examples."
+title: "Send messages"
+description: "Text, links, contacts, locations, reactions, polls, and pins via `sock.sendMessage`."
 ---
 
 Every message in Baileys goes through a single method: `sock.sendMessage(jid, content, options?)`. The `jid` is the WhatsApp ID of the recipient, `content` is an `AnyMessageContent` object describing the message type, and the optional `options` parameter accepts `MiscMessageGenerationOptions` for things like quoting, disappearing messages, and timestamps.
@@ -24,7 +24,7 @@ See the full list of content types in the [AnyMessageContent type alias](https:/
 The simplest message sends a plain string in the `text` field.
 
 ```typescript
-await sock.sendMessage(jid, { text: 'hello word' })
+await sock.sendMessage(jid, { text: 'hello world' })
 ```
 
 ### Quote / reply
@@ -32,7 +32,7 @@ await sock.sendMessage(jid, { text: 'hello word' })
 Pass the original `WAMessage` object as `quoted` in the options to thread a reply beneath it. This works with all message types.
 
 ```typescript
-await sock.sendMessage(jid, { text: 'hello word' }, { quoted: message })
+await sock.sendMessage(jid, { text: 'hello world' }, { quoted: message })
 ```
 
 ### Mention a user
@@ -87,7 +87,7 @@ const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
             + 'END:VCARD'
 
 await sock.sendMessage(
-    id,
+    jid,
     {
         contacts: {
             displayName: 'Jeff',

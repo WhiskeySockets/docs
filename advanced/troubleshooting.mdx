@@ -1,6 +1,6 @@
 ---
-title: "Troubleshoot common Baileys issues"
-description: "Diagnose and fix common Baileys problems: connection drops, QR code failures, message delivery issues, session expiry, and media upload errors."
+title: "Troubleshooting"
+description: "Connection drops, QR failures, delivery problems, session expiry, media errors."
 ---
 
 Most Baileys problems fall into a small set of categories: connection handling, authentication state, message retry configuration, and media. The sections below cover the most common issues and their fixes.
@@ -101,7 +101,7 @@ Most Baileys problems fall into a small set of categories: connection handling, 
     ```typescript
     import { getAggregateVotesInPollMessage } from '@whiskeysockets/baileys'
 
-    sock.ev.on('messages.update', event => {
+    sock.ev.on('messages.update', async event => {
         for(const { key, update } of event) {
             if(update.pollUpdates) {
                 const pollCreation = await getMessage(key)
@@ -128,7 +128,7 @@ Most Baileys problems fall into a small set of categories: connection handling, 
     Convert your audio with `ffmpeg` before sending:
 
     ```bash
-    ffmpeg -i input.mp4 -avoid_negative_ts make_zero -ac 1 output.ogg
+    ffmpeg -i input.mp4 -c:a libopus -ac 1 -avoid_negative_ts make_zero output.ogg
     ```
 
     The required flags are:
@@ -141,7 +141,7 @@ Most Baileys problems fall into a small set of categories: connection handling, 
     ```typescript
     await sock.sendMessage(jid, {
         audio: { url: './output.ogg' },
-        mimetype: 'audio/mp4'
+        mimetype: 'audio/ogg; codecs=opus'
     })
     ```
   </Accordion>
@@ -231,7 +231,7 @@ Most Baileys problems fall into a small set of categories: connection handling, 
 
     sock.ev.on('messages.upsert', async ({ messages }) => {
         for (const m of messages) {
-            if (!m.message) return
+            if (!m.message) continue
             const messageType = getContentType(m.message)
 
             if (messageType === 'imageMessage') {

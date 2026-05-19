@@ -1,6 +1,6 @@
 ---
-title: "Save and restore WhatsApp sessions"
-description: "Persist your Baileys auth credentials to disk so you never need to re-scan the QR code. Covers useMultiFileAuthState and custom auth store patterns."
+title: "Session management"
+description: "Persist auth state so you don't re-scan the QR every restart."
 ---
 
 By default, Baileys holds your authentication credentials only in memory. When your process restarts, the session is gone and you must scan the QR code again. Persisting the auth state to disk solves this: on each restart, Baileys loads the saved credentials and reconnects without prompting for a new QR code.
@@ -137,7 +137,7 @@ import { BufferJSON } from '@whiskeysockets/baileys'
 const serialized = JSON.stringify(creds, BufferJSON.replacer)
 
 // Reading
-const creds = JSON.parse(serialized, BufferJSON.reviver)
+const restored = JSON.parse(serialized, BufferJSON.reviver)
 ```
 
 ## Building a database-backed auth store

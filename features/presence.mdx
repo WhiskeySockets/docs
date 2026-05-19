@@ -1,6 +1,6 @@
 ---
-title: "Subscribe to and broadcast WhatsApp presence updates"
-description: "Track whether contacts are online, typing, or recording using Baileys presence subscriptions. Learn sock.presenceSubscribe and the presence.update event."
+title: "Presence"
+description: "Track online, typing, and recording state — and broadcast your own."
 ---
 
 Presence in WhatsApp describes what another user is currently doing: whether they are online, typing a message, recording an audio clip, or have gone inactive. Baileys lets you both subscribe to presence updates from other contacts and broadcast your own presence to them.
@@ -29,9 +29,9 @@ await sock.presenceSubscribe(jid)
 
 ### Full subscribe and listen pattern
 
-```typescript
-import makeWASocket from '@whiskeysockets/baileys'
+Assuming `sock` was created elsewhere via `makeWASocket(...)`:
 
+```typescript
 // Subscribe to presence for a contact or group
 await sock.presenceSubscribe(jid)
 
