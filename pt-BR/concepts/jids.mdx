@@ -1,6 +1,6 @@
 ---
-title: "JIDs do WhatsApp explicados"
-description: "JIDs (Jabber IDs) são como o WhatsApp identifica usuários, grupos e listas de transmissão no Baileys. Aprenda os formatos, a dualidade PN/LID e os helpers."
+title: "JIDs"
+description: "Como o WhatsApp identifica usuários, grupos e transmissões — incluindo PN/LID."
 ---
 
 O WhatsApp identifica todo participante — usuários, grupos, listas de transmissão e feeds de status — com um **JID** (Jabber ID). JIDs vêm do protocolo XMPP e seguem o formato `local@server`. Você os encontra o tempo todo no Baileys: como destino de `sock.sendMessage`, no `key.remoteJid` de cada mensagem recebida e como parâmetro de consultas a grupos e contatos.
@@ -230,6 +230,10 @@ S_WHATSAPP_NET   // '@s.whatsapp.net'
 OFFICIAL_BIZ_JID // '16505361212@c.us'
 META_AI_JID      // '13135550002@c.us'
 ```
+
+<Note>
+  `META_AI_JID` é o JID legado em `@c.us` da conta da Meta AI, mas o helper `isJidMetaAI(jid)` casa apenas com o servidor `@bot` — o domínio que as interações com o bot da Meta AI usam atualmente. Os dois são intencionalmente diferentes e `isJidMetaAI(META_AI_JID)` retorna `false`. Compare contra `META_AI_JID` diretamente quando precisar identificar essa conta específica.
+</Note>
 
 ---
 

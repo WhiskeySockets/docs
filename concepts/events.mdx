@@ -1,6 +1,6 @@
 ---
-title: "Handle real-time events with Baileys"
-description: "Baileys emits typed events for messages, connection state, groups, contacts, and more. Learn how to listen, batch process, and handle each event type."
+title: "Events"
+description: "Typed events for messages, connection state, groups, contacts, and more."
 ---
 
 Baileys communicates everything that happens on your WhatsApp connection through a typed event emitter available as `sock.ev`. Every event name maps to a specific payload type defined in `BaileysEventMap`, so your IDE can autocomplete both the event name and the shape of the data you receive.
@@ -403,6 +403,7 @@ async function startSock() {
     if (events['messages.update']) {
       for (const { key, update } of events['messages.update']) {
         if (update.pollUpdates) {
+          // `getMessage` must be wired up in your SocketConfig — see the getMessage section in socket-config
           const pollCreation = await getMessage(key)
           if (pollCreation) {
             console.log(

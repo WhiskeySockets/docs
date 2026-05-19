@@ -1,6 +1,6 @@
 ---
-title: "Envie e receba mídia no WhatsApp"
-description: "Envie imagens, vídeos, áudio, documentos e GIFs com o Baileys."
+title: "Mensagens de mídia"
+description: "Envie e baixe imagens, vídeos, áudio, documentos, GIFs e stickers."
 ---
 
 O Baileys aceita mídia em três formas via `WAMediaUpload`: `Buffer`, `{ url: '...' }`, ou `{ stream: Stream }`.
@@ -21,7 +21,7 @@ Buffer
 
 ```typescript
 await sock.sendMessage(
-    id,
+    jid,
     {
         image: {
             url: './Media/ma_img.png'
@@ -35,7 +35,7 @@ await sock.sendMessage(
 
 ```typescript
 await sock.sendMessage(
-    id,
+    jid,
     {
         video: {
             url: './Media/ma_gif.mp4'
@@ -66,7 +66,7 @@ await sock.sendMessage(
 Converta com `ffmpeg` antes de enviar:
 
 ```bash
-ffmpeg -i input.mp4 -avoid_negative_ts make_zero -ac 1 output.ogg
+ffmpeg -i input.mp4 -c:a libopus -ac 1 -avoid_negative_ts make_zero output.ogg
 ```
 
 ```typescript
@@ -74,9 +74,9 @@ await sock.sendMessage(
     jid,
     {
         audio: {
-            url: './Media/audio.mp3'
+            url: './Media/output.ogg'
         },
-        mimetype: 'audio/mp4'
+        mimetype: 'audio/ogg; codecs=opus'
     }
 )
 ```
@@ -89,7 +89,7 @@ await sock.sendMessage(
 
 ```typescript
 await sock.sendMessage(
-    id,
+    jid,
     {
         image: {
             url: './Media/ma_img.png'

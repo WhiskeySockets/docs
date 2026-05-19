@@ -10,6 +10,9 @@
   "colors": {
     "primary": "#18cdb1"
   },
+  "contextual": {
+    "options": ["copy", "view"]
+  },
   "navbar": {
     "links": [
       {

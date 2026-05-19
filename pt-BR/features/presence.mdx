@@ -1,6 +1,6 @@
 ---
-title: "Inscrever-se e transmitir presença no WhatsApp"
-description: "Acompanhe quando contatos estão online, digitando ou gravando usando assinaturas de presença do Baileys."
+title: "Presença"
+description: "Veja quem está online, digitando ou gravando — e transmita a sua presença."
 ---
 
 ## Estados de presença
@@ -23,9 +23,9 @@ await sock.presenceSubscribe(jid)
 
 ## Padrão completo
 
-```typescript
-import makeWASocket from '@whiskeysockets/baileys'
+Assumindo que `sock` já foi criado em outro lugar via `makeWASocket(...)`:
 
+```typescript
 await sock.presenceSubscribe(jid)
 
 sock.ev.on('presence.update', ({ id, presences }) => {

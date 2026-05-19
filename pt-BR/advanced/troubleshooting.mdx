@@ -1,6 +1,6 @@
 ---
-title: "Resolver problemas comuns do Baileys"
-description: "Diagnostique e corrija problemas: quedas de conexão, falhas de QR, problemas de entrega, expiração de sessão e erros de upload de mídia."
+title: "Solução de problemas"
+description: "Quedas de conexão, falhas de QR, entrega, sessão e erros de mídia."
 ---
 
 ## Problemas comuns
@@ -82,7 +82,7 @@ description: "Diagnostique e corrija problemas: quedas de conexão, falhas de QR
     ```typescript
     import { getAggregateVotesInPollMessage } from '@whiskeysockets/baileys'
 
-    sock.ev.on('messages.update', event => {
+    sock.ev.on('messages.update', async event => {
         for(const { key, update } of event) {
             if(update.pollUpdates) {
                 const pollCreation = await getMessage(key)
@@ -105,13 +105,13 @@ description: "Diagnostique e corrija problemas: quedas de conexão, falhas de QR
     Converta com `ffmpeg`:
 
     ```bash
-    ffmpeg -i input.mp4 -avoid_negative_ts make_zero -ac 1 output.ogg
+    ffmpeg -i input.mp4 -c:a libopus -ac 1 -avoid_negative_ts make_zero output.ogg
     ```
 
     ```typescript
     await sock.sendMessage(jid, {
         audio: { url: './output.ogg' },
-        mimetype: 'audio/mp4'
+        mimetype: 'audio/ogg; codecs=opus'
     })
     ```
   </Accordion>
@@ -186,7 +186,7 @@ description: "Diagnostique e corrija problemas: quedas de conexão, falhas de QR
 
     sock.ev.on('messages.upsert', async ({ messages }) => {
         for (const m of messages) {
-            if (!m.message) return
+            if (!m.message) continue
             const messageType = getContentType(m.message)
 
             if (messageType === 'imageMessage') {

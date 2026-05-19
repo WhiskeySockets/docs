@@ -1,6 +1,6 @@
 ---
-title: "Envie mensagens do WhatsApp com o Baileys"
-description: "Envie texto, links, contatos, localizações, reações, enquetes e mensagens fixadas usando sock.sendMessage."
+title: "Enviar mensagens"
+description: "Texto, links, contatos, localização, reações, enquetes e pins via `sock.sendMessage`."
 ---
 
 Toda mensagem no Baileys passa por um único método: `sock.sendMessage(jid, content, options?)`.
@@ -18,13 +18,13 @@ sock.sendMessage(jid, content, options)
 ### Mensagem de texto
 
 ```typescript
-await sock.sendMessage(jid, { text: 'hello word' })
+await sock.sendMessage(jid, { text: 'hello world' })
 ```
 
 ### Citação / resposta
 
 ```typescript
-await sock.sendMessage(jid, { text: 'hello word' }, { quoted: message })
+await sock.sendMessage(jid, { text: 'hello world' }, { quoted: message })
 ```
 
 ### Mencionar um usuário
@@ -71,7 +71,7 @@ const vcard = 'BEGIN:VCARD\n'
             + 'END:VCARD'
 
 await sock.sendMessage(
-    id,
+    jid,
     {
         contacts: {
             displayName: 'Jeff',

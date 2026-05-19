@@ -1,6 +1,6 @@
 ---
-title: "Migrar para o Baileys v7"
-description: "Mudanças incompatíveis no Baileys 7.x: LIDs, ACKs removidos, builds ESM, protobufs reduzidos e suporte ao Meta Coexistence."
+title: "Migração v7"
+description: "Mudanças incompatíveis no 7.x: LIDs, ACKs, ESM-only, protobufs reduzidos."
 ---
 
 ## LIDs (Linked Identity JIDs)
@@ -14,7 +14,7 @@ O WhatsApp finalizou o rollout de LID em 2024. Um **LIDJID** (Linked Identity Ja
 Pontos-chave:
 
 - **Um LID é um JID.** Único por usuário, não por grupo.
-- **Você consegue resolver PN → LID, mas não o inverso.** O Baileys expõe `sock.signalRepository.lidMapping` com `storeLIDPNMapping`, `getLIDForPN`, `getLIDsForPNs` e `getPNForLID`.
+- **A resolução pela rede é unidirecional: PN → LID.** Use `onWhatsApp()` ou o USyncProtocol para descobrir o LID a partir de um número; o caminho inverso não é exposto pelo WhatsApp. O Baileys mantém um mapeamento local em `sock.signalRepository.lidMapping` com `storeLIDPNMapping`, `getLIDForPN`, `getLIDsForPNs` e `getPNForLID`. O `getPNForLID` só retorna pares que o Baileys já tenha visto em tráfego anterior — ele não consulta um PN para um LID desconhecido.
 - **`onWhatsApp` não retorna mais LIDs.** Use `getLIDForPN` / `getLIDsForPNs`.
 - **`isJidUser` foi removido** em favor de `isPnUser`.
 

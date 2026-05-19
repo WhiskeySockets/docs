@@ -1,12 +1,12 @@
 ---
-title: "Editar, deletar e ler mensagens do WhatsApp"
-description: "Delete mensagens para todos, edite mensagens enviadas, marque como lidas e atualize sua presença."
+title: "Ações em mensagens"
+description: "Edite, delete, marque como lido e atualize digitação ou presença."
 ---
 
 ## Deletar mensagem para todos
 
 ```typescript
-const msg = await sock.sendMessage(jid, { text: 'hello word' })
+const msg = await sock.sendMessage(jid, { text: 'hello world' })
 await sock.sendMessage(jid, { delete: msg.key })
 ```
 
@@ -17,9 +17,11 @@ await sock.sendMessage(jid, { delete: msg.key })
 ## Editar mensagem
 
 ```typescript
+const sent = await sock.sendMessage(jid, { text: 'hello world' })
+
 await sock.sendMessage(jid, {
       text: 'updated text goes here',
-      edit: response.key,
+      edit: sent.key,
     });
 ```
 

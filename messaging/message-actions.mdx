@@ -1,6 +1,6 @@
 ---
-title: "Edit, delete, and read WhatsApp messages"
-description: "Delete messages for everyone, edit sent messages, mark messages as read, and update your typing or online presence using Baileys socket methods."
+title: "Message actions"
+description: "Edit, delete, mark as read, and update typing or online presence."
 ---
 
 Beyond sending new messages, Baileys gives you methods to manage the lifecycle of messages: deleting them for all participants, editing previously sent content, marking messages as read, and broadcasting your presence state (typing, recording, online) to a chat.
@@ -10,7 +10,7 @@ Beyond sending new messages, Baileys gives you methods to manage the lifecycle o
 Pass the `key` of the message you want to remove inside a `delete` content object. This removes the message for all participants in the chat.
 
 ```typescript
-const msg = await sock.sendMessage(jid, { text: 'hello word' })
+const msg = await sock.sendMessage(jid, { text: 'hello world' })
 await sock.sendMessage(jid, { delete: msg.key })
 ```
 
@@ -23,9 +23,11 @@ To delete a message only for yourself (not for other participants), use `sock.ch
 Pass the updated content along with the `edit` field set to the key of the original message. You can include any editable content type in the same call.
 
 ```typescript
+const sent = await sock.sendMessage(jid, { text: 'hello world' })
+
 await sock.sendMessage(jid, {
       text: 'updated text goes here',
-      edit: response.key,
+      edit: sent.key,
     });
 ```
 

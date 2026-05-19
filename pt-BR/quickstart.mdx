@@ -1,6 +1,6 @@
 ---
-title: "Comece com o Baileys"
-description: "Construa seu primeiro bot de WhatsApp com o Baileys em minutos. Aprenda a conectar, processar eventos, salvar sessões e enviar sua primeira mensagem."
+title: "Início rápido"
+description: "Conecte, persista a sessão e envie a primeira mensagem em minutos."
 ---
 
 Este guia mostra como criar uma aplicação Baileys mínima que conecta ao WhatsApp, persiste sua sessão, escuta mensagens recebidas e responde a elas. Ao final, você terá um bot funcional que pode estender com sua própria lógica.
@@ -43,7 +43,9 @@ async function connectToWhatsApp() {
     })
 
     sock.ev.on('messages.upsert', async (event) => {
+        if (event.type !== 'notify') return
         for (const m of event.messages) {
+            if (m.key.fromMe) continue
             console.log(JSON.stringify(m, undefined, 2))
 
             console.log('replying to', m.key.remoteJid)
@@ -144,7 +146,9 @@ connectToWhatsApp()
 
     ```typescript
     sock.ev.on('messages.upsert', async (event) => {
+        if (event.type !== 'notify') return
         for (const m of event.messages) {
+            if (m.key.fromMe) continue
             console.log(JSON.stringify(m, undefined, 2))
 
             console.log('replying to', m.key.remoteJid)
@@ -152,6 +156,8 @@ connectToWhatsApp()
         }
     })
     ```
+
+    Filtrar por `event.type === 'notify'` e `!m.key.fromMe` evita responder ao próprio bot e processar backfills de histórico como se fossem novas mensagens.
 
     `m.key.remoteJid` é o ID do WhatsApp (JID) da conversa de origem da mensagem. Passe-o como primeiro argumento de `sock.sendMessage` para responder.
   </Step>

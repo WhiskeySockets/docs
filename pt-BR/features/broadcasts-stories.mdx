@@ -1,7 +1,13 @@
 ---
-title: "Enviar transmissões e Stories do WhatsApp com o Baileys"
-description: "Publique status (Stories) e envie mensagens a listas de transmissão."
+title: "Transmissões e Stories"
+description: "Publique status e envie para listas de transmissão."
 ---
+
+O Baileys suporta dois mecanismos relacionados, mas distintos: **listas de transmissão**, que enviam uma mensagem privadamente a vários contatos de uma vez, e o **Status do WhatsApp** (Stories), que publica conteúdo visível aos seus contatos por 24 horas. Ambos usam `sock.sendMessage` com algumas opções adicionais.
+
+## JIDs do WhatsApp para transmissões
+
+Antes de enviar, garanta que você está usando o formato de JID correto:
 
 | Alvo | Formato JID |
 | --- | --- |
@@ -9,6 +15,8 @@ description: "Publique status (Stories) e envie mensagens a listas de transmiss�
 | Status (Stories) | `status@broadcast` |
 
 ## Enviar transmissão ou status
+
+Adicione `broadcast`, `statusJidList` e, opcionalmente, `backgroundColor` e `font` ao objeto de opções de `sock.sendMessage`.
 
 ```typescript
 await sock.sendMessage(
@@ -28,18 +36,22 @@ await sock.sendMessage(
 )
 ```
 
+Opções principais:
+
 | Opção | Descrição |
 | --- | --- |
 | `broadcast` | `true` para habilitar modo de transmissão |
-| `statusJidList` | Array de JIDs que vão receber este status |
+| `statusJidList` | Array de JIDs dos contatos que receberão este status |
 | `backgroundColor` | Cor de fundo para status de texto |
 | `font` | Estilo de fonte para status de texto |
 
 <Note>
-  `statusJidList` é obrigatório ao publicar em `status@broadcast`.
+  `statusJidList` é obrigatório ao publicar em `status@broadcast`. Ele define quais dos seus contatos podem ver o status. Você é responsável por construir e manter essa lista.
 </Note>
 
-## Tipos suportados
+## Tipos de conteúdo suportados
+
+O corpo da mensagem (primeiro argumento após o JID) pode ser qualquer um destes tipos:
 
 | Tipo | Caso de uso |
 | --- | --- |
@@ -48,27 +60,30 @@ await sock.sendMessage(
 | `videoMessage` | Status de vídeo |
 | `voiceMessage` | Status de áudio |
 
-Veja `AnyRegularMessageContent` e `MiscMessageGenerationOptions`.
+Veja o type alias [AnyRegularMessageContent](https://baileys.wiki/docs/api/type-aliases/AnyRegularMessageContent/) para a lista completa de formatos suportados, e [MiscMessageGenerationOptions](https://baileys.wiki/docs/api/type-aliases/MiscMessageGenerationOptions/) para todas as opções de envio.
 
 ## Enviar para lista de transmissão
 
+Você pode enviar para uma lista de transmissão da mesma forma que envia para um chat individual ou grupo — basta usar o JID da lista como destino.
+
 ```typescript
-await sock.sendMessage('1234567890123456789@broadcast', { text: 'Hello everyone!' })
+// envia uma mensagem de texto para uma lista de transmissão
+await sock.sendMessage('1234567890123456789@broadcast', { text: 'Olá a todos!' })
 ```
 
-## Consultar nome e destinatários
+## Consultar nome e destinatários da lista
 
 ```typescript
 const bList = await sock.getBroadcastListInfo('1234@broadcast')
-console.log(`list name: ${bList.name}, recps: ${bList.recipients}`)
+console.log(`nome da lista: ${bList.name}, destinatários: ${bList.recipients}`)
 ```
 
 ## Limitações
 
 <Warning>
-  O WhatsApp Web não suporta criar novas listas de transmissão.
+  O WhatsApp Web não suporta criar novas listas de transmissão. Você ainda pode enviar para listas existentes e deletá-las, mas não criar novas pelo Baileys.
 </Warning>
 
-- Listas devem ser criadas no app móvel primeiro.
-- Cada JID é derivado do timestamp de criação.
-- Deletar via `chatModify` é suportado, criar não.
+- Listas de transmissão devem ser criadas no app móvel do WhatsApp primeiro.
+- Cada JID de lista é derivado do timestamp de criação, ex.: `1234567890123@broadcast`.
+- Deletar uma lista via `chatModify` é suportado; criar não.

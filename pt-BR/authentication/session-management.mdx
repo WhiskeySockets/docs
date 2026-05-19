@@ -1,6 +1,6 @@
 ---
-title: "Salvar e restaurar sessões do WhatsApp"
-description: "Persista as credenciais de autenticação do Baileys em disco para nunca precisar reescanear o QR. Cobre useMultiFileAuthState e padrões customizados."
+title: "Sessões"
+description: "Persista a autenticação para não reescanear o QR a cada reinício."
 ---
 
 Por padrão, o Baileys mantém suas credenciais de autenticação apenas em memória. Quando o processo reinicia, a sessão se perde e você precisa escanear o QR de novo. Persistir o estado de autenticação resolve isso.
@@ -119,8 +119,11 @@ A implementação de `useMultiFileAuthState` serializa credenciais usando `Buffe
 ```typescript
 import { BufferJSON } from '@whiskeysockets/baileys'
 
+// Ao gravar
 const serialized = JSON.stringify(creds, BufferJSON.replacer)
-const creds = JSON.parse(serialized, BufferJSON.reviver)
+
+// Ao ler
+const restored = JSON.parse(serialized, BufferJSON.reviver)
 ```
 
 ## Construindo um auth store em banco de dados

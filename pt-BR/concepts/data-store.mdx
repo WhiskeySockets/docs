@@ -1,6 +1,6 @@
 ---
-title: "Implementar um data store para o Baileys"
-description: "O Baileys não tem persistência embutida. Aprenda a usar um store em memória ou construir um custom data store."
+title: "Data store"
+description: "Persista chats, mensagens e contatos. Use o store em memória ou o seu backend."
 ---
 
 O Baileys é um cliente WebSocket sem estado. Ele processa e emite eventos, mas não armazena nada entre reinicializações. Sua aplicação é responsável por construir e manter esse estado a partir dos eventos que o Baileys emite.
@@ -148,7 +148,7 @@ const getMsg = db.prepare(
 )
 
 export async function saveMessage(msg: proto.IWebMessageInfo) {
-  if (msg.key.remoteJid && msg.key.id) {
+  if (msg.key.remoteJid && msg.key.id && msg.message) {
     insertMsg.run(msg.key.remoteJid, msg.key.id, JSON.stringify(msg.message))
   }
 }

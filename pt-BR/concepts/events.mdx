@@ -1,6 +1,6 @@
 ---
-title: "Lidar com eventos em tempo real no Baileys"
-description: "O Baileys emite eventos tipados para mensagens, estado de conexão, grupos, contatos e mais."
+title: "Eventos"
+description: "Eventos tipados para mensagens, conexão, grupos, contatos e mais."
 ---
 
 O Baileys comunica tudo que acontece na sua conexão WhatsApp por um event emitter tipado disponível em `sock.ev`. Cada nome de evento mapeia para um payload específico definido em `BaileysEventMap`.
@@ -153,6 +153,7 @@ sock.ev.on('messages.update', async (updates) => {
     }
 
     if (update.pollUpdates) {
+      // decifra votos da enquete — requer `getMessage` configurado no SocketConfig
       const pollCreation = await getMessage(key)
       if (pollCreation) {
         const result = getAggregateVotesInPollMessage({
@@ -327,6 +328,7 @@ async function startSock() {
     if (events['messages.update']) {
       for (const { key, update } of events['messages.update']) {
         if (update.pollUpdates) {
+          // `getMessage` precisa ser passado em SocketConfig (veja a seção `getMessage` em socket-config)
           const pollCreation = await getMessage(key)
           if (pollCreation) {
             console.log(
