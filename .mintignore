@@ -5,3 +5,7 @@
 # Draft content
 drafts/
 *.draft.mdx
+
+# Build tooling, not publishable pages. scripts/ generates the API Reference and
+# Protobuf sections; see AGENTS.md.
+scripts/

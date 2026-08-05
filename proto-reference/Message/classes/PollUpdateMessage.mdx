@@ -1,0 +1,206 @@
+---
+title: "PollUpdateMessage"
+description: "Protobuf class PollUpdateMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:8424](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8424)
+
+## Implements
+
+- [`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage)
+
+## Constructors
+
+### new PollUpdateMessage()
+
+> **new PollUpdateMessage**(`p`?): [`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+Defined in: [WAProto/index.d.ts:8425](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8425)
+
+#### Parameters
+
+##### p?
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage)
+
+#### Returns
+
+[`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+## Properties
+
+### metadata?
+
+> `optional` **metadata**: `null` \| [`IPollUpdateMessageMetadata`](/proto-reference/Message/interfaces/IPollUpdateMessageMetadata)
+
+Defined in: [WAProto/index.d.ts:8428](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8428)
+
+#### Implementation of
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage).[`metadata`](/proto-reference/Message/interfaces/IPollUpdateMessage#metadata)
+
+***
+
+### pollCreationMessageKey?
+
+> `optional` **pollCreationMessageKey**: `null` \| [`IMessageKey`](/proto-reference/interfaces/IMessageKey)
+
+Defined in: [WAProto/index.d.ts:8426](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8426)
+
+#### Implementation of
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage).[`pollCreationMessageKey`](/proto-reference/Message/interfaces/IPollUpdateMessage#pollcreationmessagekey)
+
+***
+
+### senderTimestampMs?
+
+> `optional` **senderTimestampMs**: `null` \| `number` \| `Long`
+
+Defined in: [WAProto/index.d.ts:8429](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8429)
+
+#### Implementation of
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage).[`senderTimestampMs`](/proto-reference/Message/interfaces/IPollUpdateMessage#sendertimestampms)
+
+***
+
+### vote?
+
+> `optional` **vote**: `null` \| [`IPollEncValue`](/proto-reference/Message/interfaces/IPollEncValue)
+
+Defined in: [WAProto/index.d.ts:8427](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8427)
+
+#### Implementation of
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage).[`vote`](/proto-reference/Message/interfaces/IPollUpdateMessage#vote)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+Defined in: [WAProto/index.d.ts:8430](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8430)
+
+#### Parameters
+
+##### properties?
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage)
+
+#### Returns
+
+[`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+Defined in: [WAProto/index.d.ts:8432](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8432)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:8431](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8431)
+
+#### Parameters
+
+##### m
+
+[`IPollUpdateMessage`](/proto-reference/Message/interfaces/IPollUpdateMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+Defined in: [WAProto/index.d.ts:8433](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8433)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:8436](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8436)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:8435](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8435)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:8434](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8434)
+
+#### Parameters
+
+##### m
+
+[`PollUpdateMessage`](/proto-reference/Message/classes/PollUpdateMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

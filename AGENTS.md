@@ -11,6 +11,8 @@ This is the Mintlify documentation site for [Baileys](https://github.com/Whiskey
 
 The site ships in two languages: English at the repo root and Brazilian Portuguese under `pt-BR/`. Every English page has a pt-BR mirror at the same relative path. **The two languages must stay structurally in sync.**
 
+This rule covers hand-written pages. The generated `api-reference/` and `proto-reference/` sections are exempt — see "Generated reference sections" below.
+
 When you change a page in either language:
 
 1. **Mirror the change in the other language in the same commit.** The docs ship from `main` and an out-of-sync pt-BR is treated as a bug, not a follow-up.
@@ -30,6 +32,32 @@ echo "scale=2; $(wc -l < pt-BR/page.mdx) / $(wc -l < page.mdx)" | bc
 ```
 
 If you only know one language well enough to write idiomatic prose, still update the other side — a literal translation that preserves structure is better than silent drift.
+
+## Generated reference sections
+
+`api-reference/` and `proto-reference/` are **generated — never edit them by hand.** The next sync overwrites the lot.
+
+- `api-reference/` — everything the `baileys` package exports (~417 pages).
+- `proto-reference/` — the `proto` namespace generated from `WAProto.proto` (~1,330 pages). It lives in its own tab because it would otherwise bury the library's own API four to one.
+
+Both come from one command, which clones Baileys, runs TypeDoc with `typedoc-plugin-markdown`, converts the output to MDX, and rewrites the two generated tabs in `docs.json`:
+
+```bash
+node scripts/sync-api-reference.mjs              # sync from Baileys master
+node scripts/sync-api-reference.mjs --ref v7.0.0 # sync from a tag or branch
+node scripts/sync-api-reference.mjs --check      # report staleness, write nothing
+```
+
+`.github/workflows/sync-api-reference.yml` runs it daily and commits when the public API changes. A release workflow in the library repo can also trigger it with a `baileys-release` `repository_dispatch`.
+
+Things worth knowing before you touch the script:
+
+- **Two files in those directories are hand-written**: `api-reference/overview.mdx` and `proto-reference/overview.mdx`. The sync preserves them and puts them first in their tab. Everything else is deleted if it no longer corresponds to an exported symbol.
+- **`gitRevision` is pinned to the ref, not the commit SHA.** Unpinned, every "Defined in" link embeds the current SHA and all 1,747 pages churn on every run, which would defeat the "commit only when the API changed" check.
+- **TypeDoc's relative links are rewritten to site routes** so readers can click from a type to the types it mentions. If you change the route layout, change `toRoute` — the link rewriter and the navigation builder both go through it.
+- **Translation parity does not apply.** The pages are machine-generated from English doc comments, so pt-BR gets link tabs pointing into the English sections rather than a translated copy. The sync writes those link tabs for every non-English language in `docs.json`.
+- **Descriptions come from the symbol's own doc comment**, taken from the preamble before the first `##`. Anything after that documents a member, not the symbol.
+- **Prose corrections belong in the library**, not here. Doc comments live in `WhiskeySockets/Baileys`.
 
 ## Titles and descriptions
 

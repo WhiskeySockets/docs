@@ -1,0 +1,202 @@
+---
+title: "HSMLocalizableParameter"
+description: "Protobuf class HSMLocalizableParameter generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:6437](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6437)
+
+## Implements
+
+- [`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter)
+
+## Constructors
+
+### new HSMLocalizableParameter()
+
+> **new HSMLocalizableParameter**(`p`?): [`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+Defined in: [WAProto/index.d.ts:6438](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6438)
+
+#### Parameters
+
+##### p?
+
+[`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter)
+
+#### Returns
+
+[`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+## Properties
+
+### currency?
+
+> `optional` **currency**: `null` \| [`IHSMCurrency`](/proto-reference/Message/HighlyStructuredMessage/HSMLocalizableParameter/interfaces/IHSMCurrency)
+
+Defined in: [WAProto/index.d.ts:6440](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6440)
+
+#### Implementation of
+
+[`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter).[`currency`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter#currency)
+
+***
+
+### dateTime?
+
+> `optional` **dateTime**: `null` \| [`IHSMDateTime`](/proto-reference/Message/HighlyStructuredMessage/HSMLocalizableParameter/interfaces/IHSMDateTime)
+
+Defined in: [WAProto/index.d.ts:6441](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6441)
+
+#### Implementation of
+
+[`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter).[`dateTime`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter#datetime)
+
+***
+
+### default?
+
+> `optional` **default**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:6439](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6439)
+
+#### Implementation of
+
+[`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter).[`default`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter#default)
+
+***
+
+### paramOneof?
+
+> `optional` **paramOneof**: `"currency"` \| `"dateTime"`
+
+Defined in: [WAProto/index.d.ts:6442](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6442)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+Defined in: [WAProto/index.d.ts:6443](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6443)
+
+#### Parameters
+
+##### properties?
+
+[`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter)
+
+#### Returns
+
+[`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+Defined in: [WAProto/index.d.ts:6445](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6445)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:6444](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6444)
+
+#### Parameters
+
+##### m
+
+[`IHSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/interfaces/IHSMLocalizableParameter)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+Defined in: [WAProto/index.d.ts:6446](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6446)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:6449](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6449)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:6448](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6448)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:6447](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6447)
+
+#### Parameters
+
+##### m
+
+[`HSMLocalizableParameter`](/proto-reference/Message/HighlyStructuredMessage/classes/HSMLocalizableParameter)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

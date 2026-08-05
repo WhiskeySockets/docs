@@ -1,0 +1,206 @@
+---
+title: "StatusQuotedMessage"
+description: "Protobuf class StatusQuotedMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:8939](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8939)
+
+## Implements
+
+- [`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage)
+
+## Constructors
+
+### new StatusQuotedMessage()
+
+> **new StatusQuotedMessage**(`p`?): [`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+Defined in: [WAProto/index.d.ts:8940](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8940)
+
+#### Parameters
+
+##### p?
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage)
+
+#### Returns
+
+[`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+## Properties
+
+### originalStatusId?
+
+> `optional` **originalStatusId**: `null` \| [`IMessageKey`](/proto-reference/interfaces/IMessageKey)
+
+Defined in: [WAProto/index.d.ts:8944](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8944)
+
+#### Implementation of
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage).[`originalStatusId`](/proto-reference/Message/interfaces/IStatusQuotedMessage#originalstatusid)
+
+***
+
+### text?
+
+> `optional` **text**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8942](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8942)
+
+#### Implementation of
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage).[`text`](/proto-reference/Message/interfaces/IStatusQuotedMessage#text)
+
+***
+
+### thumbnail?
+
+> `optional` **thumbnail**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:8943](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8943)
+
+#### Implementation of
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage).[`thumbnail`](/proto-reference/Message/interfaces/IStatusQuotedMessage#thumbnail)
+
+***
+
+### type?
+
+> `optional` **type**: `null` \| [`QUESTION_ANSWER`](/proto-reference/Message/StatusQuotedMessage/enumerations/StatusQuotedMessageType#question_answer)
+
+Defined in: [WAProto/index.d.ts:8941](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8941)
+
+#### Implementation of
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage).[`type`](/proto-reference/Message/interfaces/IStatusQuotedMessage#type)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+Defined in: [WAProto/index.d.ts:8945](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8945)
+
+#### Parameters
+
+##### properties?
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage)
+
+#### Returns
+
+[`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+Defined in: [WAProto/index.d.ts:8947](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8947)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:8946](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8946)
+
+#### Parameters
+
+##### m
+
+[`IStatusQuotedMessage`](/proto-reference/Message/interfaces/IStatusQuotedMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+Defined in: [WAProto/index.d.ts:8948](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8948)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:8951](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8951)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:8950](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8950)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:8949](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8949)
+
+#### Parameters
+
+##### m
+
+[`StatusQuotedMessage`](/proto-reference/Message/classes/StatusQuotedMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

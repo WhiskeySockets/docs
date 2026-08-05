@@ -1,0 +1,194 @@
+---
+title: "EncReactionMessage"
+description: "Protobuf class EncReactionMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:6137](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6137)
+
+## Implements
+
+- [`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage)
+
+## Constructors
+
+### new EncReactionMessage()
+
+> **new EncReactionMessage**(`p`?): [`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+Defined in: [WAProto/index.d.ts:6138](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6138)
+
+#### Parameters
+
+##### p?
+
+[`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage)
+
+#### Returns
+
+[`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+## Properties
+
+### encIv?
+
+> `optional` **encIv**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:6141](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6141)
+
+#### Implementation of
+
+[`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage).[`encIv`](/proto-reference/Message/interfaces/IEncReactionMessage#enciv)
+
+***
+
+### encPayload?
+
+> `optional` **encPayload**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:6140](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6140)
+
+#### Implementation of
+
+[`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage).[`encPayload`](/proto-reference/Message/interfaces/IEncReactionMessage#encpayload)
+
+***
+
+### targetMessageKey?
+
+> `optional` **targetMessageKey**: `null` \| [`IMessageKey`](/proto-reference/interfaces/IMessageKey)
+
+Defined in: [WAProto/index.d.ts:6139](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6139)
+
+#### Implementation of
+
+[`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage).[`targetMessageKey`](/proto-reference/Message/interfaces/IEncReactionMessage#targetmessagekey)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+Defined in: [WAProto/index.d.ts:6142](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6142)
+
+#### Parameters
+
+##### properties?
+
+[`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage)
+
+#### Returns
+
+[`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+Defined in: [WAProto/index.d.ts:6144](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6144)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:6143](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6143)
+
+#### Parameters
+
+##### m
+
+[`IEncReactionMessage`](/proto-reference/Message/interfaces/IEncReactionMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+Defined in: [WAProto/index.d.ts:6145](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6145)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:6148](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6148)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:6147](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6147)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:6146](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6146)
+
+#### Parameters
+
+##### m
+
+[`EncReactionMessage`](/proto-reference/Message/classes/EncReactionMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

@@ -1,0 +1,206 @@
+---
+title: "SendPaymentMessage"
+description: "Protobuf class SendPaymentMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:8851](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8851)
+
+## Implements
+
+- [`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage)
+
+## Constructors
+
+### new SendPaymentMessage()
+
+> **new SendPaymentMessage**(`p`?): [`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8852](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8852)
+
+#### Parameters
+
+##### p?
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage)
+
+#### Returns
+
+[`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+## Properties
+
+### background?
+
+> `optional` **background**: `null` \| [`IPaymentBackground`](/proto-reference/interfaces/IPaymentBackground)
+
+Defined in: [WAProto/index.d.ts:8855](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8855)
+
+#### Implementation of
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage).[`background`](/proto-reference/Message/interfaces/ISendPaymentMessage#background)
+
+***
+
+### noteMessage?
+
+> `optional` **noteMessage**: `null` \| [`IMessage`](/proto-reference/interfaces/IMessage)
+
+Defined in: [WAProto/index.d.ts:8853](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8853)
+
+#### Implementation of
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage).[`noteMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage#notemessage)
+
+***
+
+### requestMessageKey?
+
+> `optional` **requestMessageKey**: `null` \| [`IMessageKey`](/proto-reference/interfaces/IMessageKey)
+
+Defined in: [WAProto/index.d.ts:8854](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8854)
+
+#### Implementation of
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage).[`requestMessageKey`](/proto-reference/Message/interfaces/ISendPaymentMessage#requestmessagekey)
+
+***
+
+### transactionData?
+
+> `optional` **transactionData**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8856](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8856)
+
+#### Implementation of
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage).[`transactionData`](/proto-reference/Message/interfaces/ISendPaymentMessage#transactiondata)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8857](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8857)
+
+#### Parameters
+
+##### properties?
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage)
+
+#### Returns
+
+[`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8859](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8859)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:8858](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8858)
+
+#### Parameters
+
+##### m
+
+[`ISendPaymentMessage`](/proto-reference/Message/interfaces/ISendPaymentMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8860](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8860)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:8863](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8863)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:8862](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8862)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:8861](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8861)
+
+#### Parameters
+
+##### m
+
+[`SendPaymentMessage`](/proto-reference/Message/classes/SendPaymentMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

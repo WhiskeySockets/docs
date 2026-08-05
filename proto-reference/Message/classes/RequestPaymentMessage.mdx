@@ -1,0 +1,242 @@
+---
+title: "RequestPaymentMessage"
+description: "Protobuf class RequestPaymentMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:8700](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8700)
+
+## Implements
+
+- [`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage)
+
+## Constructors
+
+### new RequestPaymentMessage()
+
+> **new RequestPaymentMessage**(`p`?): [`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8701](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8701)
+
+#### Parameters
+
+##### p?
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage)
+
+#### Returns
+
+[`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+## Properties
+
+### amount?
+
+> `optional` **amount**: `null` \| [`IMoney`](/proto-reference/interfaces/IMoney)
+
+Defined in: [WAProto/index.d.ts:8707](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8707)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`amount`](/proto-reference/Message/interfaces/IRequestPaymentMessage#amount)
+
+***
+
+### amount1000?
+
+> `optional` **amount1000**: `null` \| `number` \| `Long`
+
+Defined in: [WAProto/index.d.ts:8704](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8704)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`amount1000`](/proto-reference/Message/interfaces/IRequestPaymentMessage#amount1000)
+
+***
+
+### background?
+
+> `optional` **background**: `null` \| [`IPaymentBackground`](/proto-reference/interfaces/IPaymentBackground)
+
+Defined in: [WAProto/index.d.ts:8708](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8708)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`background`](/proto-reference/Message/interfaces/IRequestPaymentMessage#background)
+
+***
+
+### currencyCodeIso4217?
+
+> `optional` **currencyCodeIso4217**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8703](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8703)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`currencyCodeIso4217`](/proto-reference/Message/interfaces/IRequestPaymentMessage#currencycodeiso4217)
+
+***
+
+### expiryTimestamp?
+
+> `optional` **expiryTimestamp**: `null` \| `number` \| `Long`
+
+Defined in: [WAProto/index.d.ts:8706](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8706)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`expiryTimestamp`](/proto-reference/Message/interfaces/IRequestPaymentMessage#expirytimestamp)
+
+***
+
+### noteMessage?
+
+> `optional` **noteMessage**: `null` \| [`IMessage`](/proto-reference/interfaces/IMessage)
+
+Defined in: [WAProto/index.d.ts:8702](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8702)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`noteMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage#notemessage)
+
+***
+
+### requestFrom?
+
+> `optional` **requestFrom**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8705](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8705)
+
+#### Implementation of
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage).[`requestFrom`](/proto-reference/Message/interfaces/IRequestPaymentMessage#requestfrom)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8709](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8709)
+
+#### Parameters
+
+##### properties?
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage)
+
+#### Returns
+
+[`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8711](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8711)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:8710](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8710)
+
+#### Parameters
+
+##### m
+
+[`IRequestPaymentMessage`](/proto-reference/Message/interfaces/IRequestPaymentMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+Defined in: [WAProto/index.d.ts:8712](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8712)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:8715](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8715)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:8714](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8714)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:8713](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8713)
+
+#### Parameters
+
+##### m
+
+[`RequestPaymentMessage`](/proto-reference/Message/classes/RequestPaymentMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

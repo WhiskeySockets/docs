@@ -1,0 +1,206 @@
+---
+title: "ReactionMessage"
+description: "Protobuf class ReactionMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:8675](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8675)
+
+## Implements
+
+- [`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage)
+
+## Constructors
+
+### new ReactionMessage()
+
+> **new ReactionMessage**(`p`?): [`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+Defined in: [WAProto/index.d.ts:8676](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8676)
+
+#### Parameters
+
+##### p?
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage)
+
+#### Returns
+
+[`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+## Properties
+
+### groupingKey?
+
+> `optional` **groupingKey**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8679](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8679)
+
+#### Implementation of
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage).[`groupingKey`](/proto-reference/Message/interfaces/IReactionMessage#groupingkey)
+
+***
+
+### key?
+
+> `optional` **key**: `null` \| [`IMessageKey`](/proto-reference/interfaces/IMessageKey)
+
+Defined in: [WAProto/index.d.ts:8677](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8677)
+
+#### Implementation of
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage).[`key`](/proto-reference/Message/interfaces/IReactionMessage#key)
+
+***
+
+### senderTimestampMs?
+
+> `optional` **senderTimestampMs**: `null` \| `number` \| `Long`
+
+Defined in: [WAProto/index.d.ts:8680](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8680)
+
+#### Implementation of
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage).[`senderTimestampMs`](/proto-reference/Message/interfaces/IReactionMessage#sendertimestampms)
+
+***
+
+### text?
+
+> `optional` **text**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8678](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8678)
+
+#### Implementation of
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage).[`text`](/proto-reference/Message/interfaces/IReactionMessage#text)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+Defined in: [WAProto/index.d.ts:8681](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8681)
+
+#### Parameters
+
+##### properties?
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage)
+
+#### Returns
+
+[`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+Defined in: [WAProto/index.d.ts:8683](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8683)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:8682](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8682)
+
+#### Parameters
+
+##### m
+
+[`IReactionMessage`](/proto-reference/Message/interfaces/IReactionMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+Defined in: [WAProto/index.d.ts:8684](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8684)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:8687](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8687)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:8686](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8686)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:8685](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8685)
+
+#### Parameters
+
+##### m
+
+[`ReactionMessage`](/proto-reference/Message/classes/ReactionMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

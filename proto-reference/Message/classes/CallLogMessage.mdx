@@ -1,0 +1,218 @@
+---
+title: "CallLogMessage"
+description: "Protobuf class CallLogMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:5798](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5798)
+
+## Implements
+
+- [`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage)
+
+## Constructors
+
+### new CallLogMessage()
+
+> **new CallLogMessage**(`p`?): [`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+Defined in: [WAProto/index.d.ts:5799](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5799)
+
+#### Parameters
+
+##### p?
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage)
+
+#### Returns
+
+[`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+## Properties
+
+### callOutcome?
+
+> `optional` **callOutcome**: `null` \| [`CallOutcome`](/proto-reference/Message/CallLogMessage/enumerations/CallOutcome)
+
+Defined in: [WAProto/index.d.ts:5801](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5801)
+
+#### Implementation of
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage).[`callOutcome`](/proto-reference/Message/interfaces/ICallLogMessage#calloutcome)
+
+***
+
+### callType?
+
+> `optional` **callType**: `null` \| [`CallType`](/proto-reference/Message/CallLogMessage/enumerations/CallType)
+
+Defined in: [WAProto/index.d.ts:5803](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5803)
+
+#### Implementation of
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage).[`callType`](/proto-reference/Message/interfaces/ICallLogMessage#calltype)
+
+***
+
+### durationSecs?
+
+> `optional` **durationSecs**: `null` \| `number` \| `Long`
+
+Defined in: [WAProto/index.d.ts:5802](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5802)
+
+#### Implementation of
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage).[`durationSecs`](/proto-reference/Message/interfaces/ICallLogMessage#durationsecs)
+
+***
+
+### isVideo?
+
+> `optional` **isVideo**: `null` \| `boolean`
+
+Defined in: [WAProto/index.d.ts:5800](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5800)
+
+#### Implementation of
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage).[`isVideo`](/proto-reference/Message/interfaces/ICallLogMessage#isvideo)
+
+***
+
+### participants
+
+> **participants**: [`ICallParticipant`](/proto-reference/Message/CallLogMessage/interfaces/ICallParticipant)[]
+
+Defined in: [WAProto/index.d.ts:5804](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5804)
+
+#### Implementation of
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage).[`participants`](/proto-reference/Message/interfaces/ICallLogMessage#participants)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+Defined in: [WAProto/index.d.ts:5805](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5805)
+
+#### Parameters
+
+##### properties?
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage)
+
+#### Returns
+
+[`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+Defined in: [WAProto/index.d.ts:5807](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5807)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:5806](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5806)
+
+#### Parameters
+
+##### m
+
+[`ICallLogMessage`](/proto-reference/Message/interfaces/ICallLogMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+Defined in: [WAProto/index.d.ts:5808](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5808)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:5811](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5811)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:5810](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5810)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:5809](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5809)
+
+#### Parameters
+
+##### m
+
+[`CallLogMessage`](/proto-reference/Message/classes/CallLogMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

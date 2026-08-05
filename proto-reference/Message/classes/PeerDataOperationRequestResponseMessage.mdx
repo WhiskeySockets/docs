@@ -1,0 +1,194 @@
+---
+title: "PeerDataOperationRequestResponseMessage"
+description: "Protobuf class PeerDataOperationRequestResponseMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:7945](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7945)
+
+## Implements
+
+- [`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage)
+
+## Constructors
+
+### new PeerDataOperationRequestResponseMessage()
+
+> **new PeerDataOperationRequestResponseMessage**(`p`?): [`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+Defined in: [WAProto/index.d.ts:7946](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7946)
+
+#### Parameters
+
+##### p?
+
+[`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage)
+
+#### Returns
+
+[`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+## Properties
+
+### peerDataOperationRequestType?
+
+> `optional` **peerDataOperationRequestType**: `null` \| [`PeerDataOperationRequestType`](/proto-reference/Message/enumerations/PeerDataOperationRequestType)
+
+Defined in: [WAProto/index.d.ts:7947](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7947)
+
+#### Implementation of
+
+[`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage).[`peerDataOperationRequestType`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage#peerdataoperationrequesttype)
+
+***
+
+### peerDataOperationResult
+
+> **peerDataOperationResult**: [`IPeerDataOperationResult`](/proto-reference/Message/PeerDataOperationRequestResponseMessage/interfaces/IPeerDataOperationResult)[]
+
+Defined in: [WAProto/index.d.ts:7949](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7949)
+
+#### Implementation of
+
+[`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage).[`peerDataOperationResult`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage#peerdataoperationresult)
+
+***
+
+### stanzaId?
+
+> `optional` **stanzaId**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:7948](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7948)
+
+#### Implementation of
+
+[`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage).[`stanzaId`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage#stanzaid)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+Defined in: [WAProto/index.d.ts:7950](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7950)
+
+#### Parameters
+
+##### properties?
+
+[`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage)
+
+#### Returns
+
+[`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+Defined in: [WAProto/index.d.ts:7952](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7952)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:7951](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7951)
+
+#### Parameters
+
+##### m
+
+[`IPeerDataOperationRequestResponseMessage`](/proto-reference/Message/interfaces/IPeerDataOperationRequestResponseMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+Defined in: [WAProto/index.d.ts:7953](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7953)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:7956](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7956)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:7955](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7955)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:7954](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L7954)
+
+#### Parameters
+
+##### m
+
+[`PeerDataOperationRequestResponseMessage`](/proto-reference/Message/classes/PeerDataOperationRequestResponseMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

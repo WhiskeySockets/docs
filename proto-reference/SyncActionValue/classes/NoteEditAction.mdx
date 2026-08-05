@@ -1,0 +1,218 @@
+---
+title: "NoteEditAction"
+description: "Protobuf class NoteEditAction generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:12386](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12386)
+
+## Implements
+
+- [`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction)
+
+## Constructors
+
+### new NoteEditAction()
+
+> **new NoteEditAction**(`p`?): [`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+Defined in: [WAProto/index.d.ts:12387](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12387)
+
+#### Parameters
+
+##### p?
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction)
+
+#### Returns
+
+[`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+## Properties
+
+### chatJid?
+
+> `optional` **chatJid**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:12389](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12389)
+
+#### Implementation of
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction).[`chatJid`](/proto-reference/SyncActionValue/interfaces/INoteEditAction#chatjid)
+
+***
+
+### createdAt?
+
+> `optional` **createdAt**: `null` \| `number` \| `Long`
+
+Defined in: [WAProto/index.d.ts:12390](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12390)
+
+#### Implementation of
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction).[`createdAt`](/proto-reference/SyncActionValue/interfaces/INoteEditAction#createdat)
+
+***
+
+### deleted?
+
+> `optional` **deleted**: `null` \| `boolean`
+
+Defined in: [WAProto/index.d.ts:12391](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12391)
+
+#### Implementation of
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction).[`deleted`](/proto-reference/SyncActionValue/interfaces/INoteEditAction#deleted)
+
+***
+
+### type?
+
+> `optional` **type**: `null` \| [`NoteType`](/proto-reference/SyncActionValue/NoteEditAction/enumerations/NoteType)
+
+Defined in: [WAProto/index.d.ts:12388](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12388)
+
+#### Implementation of
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction).[`type`](/proto-reference/SyncActionValue/interfaces/INoteEditAction#type)
+
+***
+
+### unstructuredContent?
+
+> `optional` **unstructuredContent**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:12392](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12392)
+
+#### Implementation of
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction).[`unstructuredContent`](/proto-reference/SyncActionValue/interfaces/INoteEditAction#unstructuredcontent)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+Defined in: [WAProto/index.d.ts:12393](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12393)
+
+#### Parameters
+
+##### properties?
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction)
+
+#### Returns
+
+[`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+Defined in: [WAProto/index.d.ts:12395](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12395)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:12394](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12394)
+
+#### Parameters
+
+##### m
+
+[`INoteEditAction`](/proto-reference/SyncActionValue/interfaces/INoteEditAction)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+Defined in: [WAProto/index.d.ts:12396](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12396)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:12399](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12399)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:12398](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12398)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:12397](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L12397)
+
+#### Parameters
+
+##### m
+
+[`NoteEditAction`](/proto-reference/SyncActionValue/classes/NoteEditAction)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

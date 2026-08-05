@@ -1,0 +1,69 @@
+name: Sync API reference
+
+# Regenerates the API Reference and Protobuf sections from the Baileys sources
+# and commits the result. Mintlify deploys from main, so the commit is what
+# publishes the updated reference.
+
+on:
+  schedule:
+    # Daily, matching the cadence the old baileys.wiki site published at.
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Baileys branch, tag, or commit to document"
+        required: false
+        default: "master"
+  # Lets a release workflow in WhiskeySockets/Baileys trigger a sync:
+  #   gh api repos/WhiskeySockets/docs/dispatches \
+  #     -f event_type=baileys-release -F client_payload[ref]=v7.0.0
+  repository_dispatch:
+    types: [baileys-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-api-reference
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Sync reference
+        id: sync
+        env:
+          BAILEYS_REF: ${{ github.event.inputs.ref || github.event.client_payload.ref || 'master' }}
+        run: node scripts/sync-api-reference.mjs | tee sync.log
+        # The script prints `changed=true|false` as its last line.
+
+      - name: Read result
+        id: result
+        run: |
+          grep -E '^changed=(true|false)$' sync.log >> "$GITHUB_OUTPUT"
+          rm sync.log
+
+      - name: Commit
+        if: steps.result.outputs.changed == 'true'
+        run: |
+          version=$(node -p "require('./scripts/api-reference-source.json').version")
+          commit=$(node -p "require('./scripts/api-reference-source.json').commit.slice(0, 12)")
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api-reference proto-reference docs.json scripts/api-reference-source.json
+          git commit -m "docs: sync API reference from baileys@${version} (${commit})"
+          git push
+
+      - name: Report no-op
+        if: steps.result.outputs.changed != 'true'
+        run: echo "Baileys public API is unchanged — nothing to commit."

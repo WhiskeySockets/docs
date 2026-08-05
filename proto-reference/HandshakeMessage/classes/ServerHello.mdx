@@ -1,0 +1,206 @@
+---
+title: "ServerHello"
+description: "Protobuf class ServerHello generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:4501](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4501)
+
+## Implements
+
+- [`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello)
+
+## Constructors
+
+### new ServerHello()
+
+> **new ServerHello**(`p`?): [`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+Defined in: [WAProto/index.d.ts:4502](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4502)
+
+#### Parameters
+
+##### p?
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello)
+
+#### Returns
+
+[`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+## Properties
+
+### ephemeral?
+
+> `optional` **ephemeral**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:4503](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4503)
+
+#### Implementation of
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello).[`ephemeral`](/proto-reference/HandshakeMessage/interfaces/IServerHello#ephemeral)
+
+***
+
+### extendedStatic?
+
+> `optional` **extendedStatic**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:4506](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4506)
+
+#### Implementation of
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello).[`extendedStatic`](/proto-reference/HandshakeMessage/interfaces/IServerHello#extendedstatic)
+
+***
+
+### payload?
+
+> `optional` **payload**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:4505](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4505)
+
+#### Implementation of
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello).[`payload`](/proto-reference/HandshakeMessage/interfaces/IServerHello#payload)
+
+***
+
+### static?
+
+> `optional` **static**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:4504](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4504)
+
+#### Implementation of
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello).[`static`](/proto-reference/HandshakeMessage/interfaces/IServerHello#static)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+Defined in: [WAProto/index.d.ts:4507](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4507)
+
+#### Parameters
+
+##### properties?
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello)
+
+#### Returns
+
+[`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+Defined in: [WAProto/index.d.ts:4509](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4509)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:4508](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4508)
+
+#### Parameters
+
+##### m
+
+[`IServerHello`](/proto-reference/HandshakeMessage/interfaces/IServerHello)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+Defined in: [WAProto/index.d.ts:4510](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4510)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:4513](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4513)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:4512](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4512)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:4511](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L4511)
+
+#### Parameters
+
+##### m
+
+[`ServerHello`](/proto-reference/HandshakeMessage/classes/ServerHello)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

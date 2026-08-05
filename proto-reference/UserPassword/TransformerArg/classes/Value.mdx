@@ -1,0 +1,190 @@
+---
+title: "Value"
+description: "Protobuf class Value generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:13380](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13380)
+
+## Implements
+
+- [`IValue`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue)
+
+## Constructors
+
+### new Value()
+
+> **new Value**(`p`?): [`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+Defined in: [WAProto/index.d.ts:13381](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13381)
+
+#### Parameters
+
+##### p?
+
+[`IValue`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue)
+
+#### Returns
+
+[`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+## Properties
+
+### asBlob?
+
+> `optional` **asBlob**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:13382](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13382)
+
+#### Implementation of
+
+[`IValue`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue).[`asBlob`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue#asblob)
+
+***
+
+### asUnsignedInteger?
+
+> `optional` **asUnsignedInteger**: `null` \| `number`
+
+Defined in: [WAProto/index.d.ts:13383](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13383)
+
+#### Implementation of
+
+[`IValue`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue).[`asUnsignedInteger`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue#asunsignedinteger)
+
+***
+
+### value?
+
+> `optional` **value**: `"asBlob"` \| `"asUnsignedInteger"`
+
+Defined in: [WAProto/index.d.ts:13384](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13384)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+Defined in: [WAProto/index.d.ts:13385](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13385)
+
+#### Parameters
+
+##### properties?
+
+[`IValue`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue)
+
+#### Returns
+
+[`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+Defined in: [WAProto/index.d.ts:13387](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13387)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:13386](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13386)
+
+#### Parameters
+
+##### m
+
+[`IValue`](/proto-reference/UserPassword/TransformerArg/interfaces/IValue)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+Defined in: [WAProto/index.d.ts:13388](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13388)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:13391](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13391)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:13390](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13390)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:13389](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L13389)
+
+#### Parameters
+
+##### m
+
+[`Value`](/proto-reference/UserPassword/TransformerArg/classes/Value)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

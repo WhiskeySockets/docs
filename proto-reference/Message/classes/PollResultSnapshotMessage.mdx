@@ -1,0 +1,206 @@
+---
+title: "PollResultSnapshotMessage"
+description: "Protobuf class PollResultSnapshotMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:8376](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8376)
+
+## Implements
+
+- [`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage)
+
+## Constructors
+
+### new PollResultSnapshotMessage()
+
+> **new PollResultSnapshotMessage**(`p`?): [`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+Defined in: [WAProto/index.d.ts:8377](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8377)
+
+#### Parameters
+
+##### p?
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage)
+
+#### Returns
+
+[`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+## Properties
+
+### contextInfo?
+
+> `optional` **contextInfo**: `null` \| [`IContextInfo`](/proto-reference/interfaces/IContextInfo)
+
+Defined in: [WAProto/index.d.ts:8380](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8380)
+
+#### Implementation of
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage).[`contextInfo`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage#contextinfo)
+
+***
+
+### name?
+
+> `optional` **name**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:8378](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8378)
+
+#### Implementation of
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage).[`name`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage#name)
+
+***
+
+### pollType?
+
+> `optional` **pollType**: `null` \| [`PollType`](/proto-reference/Message/enumerations/PollType)
+
+Defined in: [WAProto/index.d.ts:8381](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8381)
+
+#### Implementation of
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage).[`pollType`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage#polltype)
+
+***
+
+### pollVotes
+
+> **pollVotes**: [`IPollVote`](/proto-reference/Message/PollResultSnapshotMessage/interfaces/IPollVote)[]
+
+Defined in: [WAProto/index.d.ts:8379](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8379)
+
+#### Implementation of
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage).[`pollVotes`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage#pollvotes)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+Defined in: [WAProto/index.d.ts:8382](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8382)
+
+#### Parameters
+
+##### properties?
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage)
+
+#### Returns
+
+[`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+Defined in: [WAProto/index.d.ts:8384](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8384)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:8383](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8383)
+
+#### Parameters
+
+##### m
+
+[`IPollResultSnapshotMessage`](/proto-reference/Message/interfaces/IPollResultSnapshotMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+Defined in: [WAProto/index.d.ts:8385](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8385)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:8388](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8388)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:8387](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8387)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:8386](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L8386)
+
+#### Parameters
+
+##### m
+
+[`PollResultSnapshotMessage`](/proto-reference/Message/classes/PollResultSnapshotMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

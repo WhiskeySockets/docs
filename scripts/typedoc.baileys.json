@@ -1,0 +1,19 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "plugin": ["typedoc-plugin-markdown"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "includeVersion": false,
+  "readme": "none",
+  "hideBreadcrumbs": true,
+  "hidePageHeader": true,
+  "entryFileName": "index.md",
+  "sort": ["kind", "alphabetical"],
+  "gitRevision": "master",
+  "validation": {
+    "notExported": false,
+    "notDocumented": false,
+    "invalidLink": true
+  }
+}

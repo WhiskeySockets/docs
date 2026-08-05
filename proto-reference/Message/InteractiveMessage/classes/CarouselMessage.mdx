@@ -1,0 +1,194 @@
+---
+title: "CarouselMessage"
+description: "Protobuf class CarouselMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:6789](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6789)
+
+## Implements
+
+- [`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage)
+
+## Constructors
+
+### new CarouselMessage()
+
+> **new CarouselMessage**(`p`?): [`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+Defined in: [WAProto/index.d.ts:6790](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6790)
+
+#### Parameters
+
+##### p?
+
+[`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage)
+
+#### Returns
+
+[`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+## Properties
+
+### cards
+
+> **cards**: [`IInteractiveMessage`](/proto-reference/Message/interfaces/IInteractiveMessage)[]
+
+Defined in: [WAProto/index.d.ts:6791](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6791)
+
+#### Implementation of
+
+[`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage).[`cards`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage#cards)
+
+***
+
+### carouselCardType?
+
+> `optional` **carouselCardType**: `null` \| [`CarouselCardType`](/proto-reference/Message/InteractiveMessage/CarouselMessage/enumerations/CarouselCardType)
+
+Defined in: [WAProto/index.d.ts:6793](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6793)
+
+#### Implementation of
+
+[`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage).[`carouselCardType`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage#carouselcardtype)
+
+***
+
+### messageVersion?
+
+> `optional` **messageVersion**: `null` \| `number`
+
+Defined in: [WAProto/index.d.ts:6792](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6792)
+
+#### Implementation of
+
+[`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage).[`messageVersion`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage#messageversion)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+Defined in: [WAProto/index.d.ts:6794](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6794)
+
+#### Parameters
+
+##### properties?
+
+[`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage)
+
+#### Returns
+
+[`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+Defined in: [WAProto/index.d.ts:6796](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6796)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:6795](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6795)
+
+#### Parameters
+
+##### m
+
+[`ICarouselMessage`](/proto-reference/Message/InteractiveMessage/interfaces/ICarouselMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+Defined in: [WAProto/index.d.ts:6797](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6797)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:6800](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6800)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:6799](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6799)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:6798](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L6798)
+
+#### Parameters
+
+##### m
+
+[`CarouselMessage`](/proto-reference/Message/InteractiveMessage/classes/CarouselMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

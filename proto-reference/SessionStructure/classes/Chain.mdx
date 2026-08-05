@@ -1,0 +1,206 @@
+---
+title: "Chain"
+description: "Protobuf class Chain generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:10923](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10923)
+
+## Implements
+
+- [`IChain`](/proto-reference/SessionStructure/interfaces/IChain)
+
+## Constructors
+
+### new Chain()
+
+> **new Chain**(`p`?): [`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+Defined in: [WAProto/index.d.ts:10924](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10924)
+
+#### Parameters
+
+##### p?
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain)
+
+#### Returns
+
+[`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+## Properties
+
+### chainKey?
+
+> `optional` **chainKey**: `null` \| [`IChainKey`](/proto-reference/SessionStructure/Chain/interfaces/IChainKey)
+
+Defined in: [WAProto/index.d.ts:10927](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10927)
+
+#### Implementation of
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain).[`chainKey`](/proto-reference/SessionStructure/interfaces/IChain#chainkey)
+
+***
+
+### messageKeys
+
+> **messageKeys**: [`IMessageKey`](/proto-reference/SessionStructure/Chain/interfaces/IMessageKey)[]
+
+Defined in: [WAProto/index.d.ts:10928](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10928)
+
+#### Implementation of
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain).[`messageKeys`](/proto-reference/SessionStructure/interfaces/IChain#messagekeys)
+
+***
+
+### senderRatchetKey?
+
+> `optional` **senderRatchetKey**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:10925](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10925)
+
+#### Implementation of
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain).[`senderRatchetKey`](/proto-reference/SessionStructure/interfaces/IChain#senderratchetkey)
+
+***
+
+### senderRatchetKeyPrivate?
+
+> `optional` **senderRatchetKeyPrivate**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:10926](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10926)
+
+#### Implementation of
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain).[`senderRatchetKeyPrivate`](/proto-reference/SessionStructure/interfaces/IChain#senderratchetkeyprivate)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+Defined in: [WAProto/index.d.ts:10929](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10929)
+
+#### Parameters
+
+##### properties?
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain)
+
+#### Returns
+
+[`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+Defined in: [WAProto/index.d.ts:10931](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10931)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:10930](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10930)
+
+#### Parameters
+
+##### m
+
+[`IChain`](/proto-reference/SessionStructure/interfaces/IChain)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+Defined in: [WAProto/index.d.ts:10932](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10932)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:10935](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10935)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:10934](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10934)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:10933](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L10933)
+
+#### Parameters
+
+##### m
+
+[`Chain`](/proto-reference/SessionStructure/classes/Chain)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`

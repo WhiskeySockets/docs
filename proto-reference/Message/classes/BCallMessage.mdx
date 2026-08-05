@@ -1,0 +1,206 @@
+---
+title: "BCallMessage"
+description: "Protobuf class BCallMessage generated from WAProto."
+---
+
+Defined in: [WAProto/index.d.ts:5590](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5590)
+
+## Implements
+
+- [`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage)
+
+## Constructors
+
+### new BCallMessage()
+
+> **new BCallMessage**(`p`?): [`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+Defined in: [WAProto/index.d.ts:5591](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5591)
+
+#### Parameters
+
+##### p?
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage)
+
+#### Returns
+
+[`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+## Properties
+
+### caption?
+
+> `optional` **caption**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:5595](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5595)
+
+#### Implementation of
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage).[`caption`](/proto-reference/Message/interfaces/IBCallMessage#caption)
+
+***
+
+### masterKey?
+
+> `optional` **masterKey**: `null` \| `Uint8Array`\<`ArrayBufferLike`\>
+
+Defined in: [WAProto/index.d.ts:5594](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5594)
+
+#### Implementation of
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage).[`masterKey`](/proto-reference/Message/interfaces/IBCallMessage#masterkey)
+
+***
+
+### mediaType?
+
+> `optional` **mediaType**: `null` \| [`MediaType`](/proto-reference/Message/BCallMessage/enumerations/MediaType)
+
+Defined in: [WAProto/index.d.ts:5593](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5593)
+
+#### Implementation of
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage).[`mediaType`](/proto-reference/Message/interfaces/IBCallMessage#mediatype)
+
+***
+
+### sessionId?
+
+> `optional` **sessionId**: `null` \| `string`
+
+Defined in: [WAProto/index.d.ts:5592](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5592)
+
+#### Implementation of
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage).[`sessionId`](/proto-reference/Message/interfaces/IBCallMessage#sessionid)
+
+## Methods
+
+### create()
+
+> `static` **create**(`properties`?): [`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+Defined in: [WAProto/index.d.ts:5596](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5596)
+
+#### Parameters
+
+##### properties?
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage)
+
+#### Returns
+
+[`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+***
+
+### decode()
+
+> `static` **decode**(`r`, `l`?): [`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+Defined in: [WAProto/index.d.ts:5598](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5598)
+
+#### Parameters
+
+##### r
+
+`Uint8Array`\<`ArrayBufferLike`\> | `Reader`
+
+##### l?
+
+`number`
+
+#### Returns
+
+[`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+***
+
+### encode()
+
+> `static` **encode**(`m`, `w`?): `Writer`
+
+Defined in: [WAProto/index.d.ts:5597](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5597)
+
+#### Parameters
+
+##### m
+
+[`IBCallMessage`](/proto-reference/Message/interfaces/IBCallMessage)
+
+##### w?
+
+`Writer`
+
+#### Returns
+
+`Writer`
+
+***
+
+### fromObject()
+
+> `static` **fromObject**(`d`): [`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+Defined in: [WAProto/index.d.ts:5599](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5599)
+
+#### Parameters
+
+##### d
+
+#### Returns
+
+[`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+***
+
+### getTypeUrl()
+
+> `static` **getTypeUrl**(`typeUrlPrefix`?): `string`
+
+Defined in: [WAProto/index.d.ts:5602](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5602)
+
+#### Parameters
+
+##### typeUrlPrefix?
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### toJSON()
+
+> **toJSON**(): `object`
+
+Defined in: [WAProto/index.d.ts:5601](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5601)
+
+#### Returns
+
+`object`
+
+***
+
+### toObject()
+
+> `static` **toObject**(`m`, `o`?): `object`
+
+Defined in: [WAProto/index.d.ts:5600](https://github.com/WhiskeySockets/Baileys/blob/master/WAProto/index.d.ts#L5600)
+
+#### Parameters
+
+##### m
+
+[`BCallMessage`](/proto-reference/Message/classes/BCallMessage)
+
+##### o?
+
+`IConversionOptions`
+
+#### Returns
+
+`object`
