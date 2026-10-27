@@ -1,7 +1,7 @@
 {
   "source": "https://github.com/WhiskeySockets/Baileys",
   "ref": "master",
-  "commit": "0af2386292907f7d9742d8d41f830d8c48208fa1",
+  "commit": "81345beb67ca3fb0eb79a2c20cd4ac24da517929",
   "version": "7.0.0-rc14",
   "pages": 1747,
   "generator": "typedoc + typedoc-plugin-markdown"
